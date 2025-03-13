@@ -6,6 +6,11 @@
 //=============================================================================//
 #include "cbase.h"
 #include "vgui_int.h"
+#include "IOverrideInterface.h"
+#include "OverrideUI_RootPanel.h"
+
+#include "vgui_NewMainMenu.h"
+
 #include "ienginevgui.h"
 #include "itextmessage.h"
 #include "vguicenterprint.h"
@@ -36,6 +41,8 @@ using namespace vgui;
 
 void MP3Player_Create( vgui::VPANEL parent );
 void MP3Player_Destroy();
+
+void OverrideGameUI();
 
 #include <vgui/IInputInternal.h>
 vgui::IInputInternal *g_InputInternal = NULL;
@@ -200,6 +207,14 @@ void VGui_CreateGlobalPanels( void )
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
+
+	VPANEL gameUIPanel = enginevgui->GetPanel(PANEL_GAMEUIDLL);
+
+	mainmenu->Create(gameUIPanel);
+
+	OverrideUI->Create(NULL);
+	OverrideGameUI();
+
 	// Part of game
 	internalCenterPrint->Create( gameToolParent );
 	loadingdisc->Create( gameToolParent );
@@ -240,6 +255,8 @@ void VGui_Shutdown()
 	messagechars->Destroy();
 	loadingdisc->Destroy();
 	internalCenterPrint->Destroy();
+
+	mainmenu->Destroy();
 
 	if ( g_pClientMode )
 	{
