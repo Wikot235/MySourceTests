@@ -12,10 +12,8 @@
 
 #include "tier0/memdbgon.h"
 
-
 using namespace vgui;
 
-//CMainMenu class: Tutorial example class
 class CMainMenu : public vgui::Frame
 {
 public:
@@ -33,10 +31,6 @@ protected:
 
 private:
 	vgui::Button* m_pExitButton;
-	vgui::Panel* m_pExitBg;
-	vgui::RichText* m_pExitText;
-
-
 
 	vgui::HFont m_pHFontAlteDin;
 };
@@ -68,12 +62,6 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	SetVisible(true);
 
 	vgui::ivgui()->AddTickSignal(GetVPanel(), 100);
-	
-	m_pExitBg = vgui::SETUP_PANEL(new vgui::Panel(this, "ExitBg"));
-	m_pExitBg->SetSize(500, 45);
-	m_pExitBg->SetPaintEnabled(true);
-	m_pExitBg->SetBgColor(Color(0, 0, 0, 0));
-	m_pExitBg->SetPos(0, 0);
 
 	m_pExitButton = vgui::SETUP_PANEL(new vgui::Button(this, "ExitButton", "E X I T"));
 	m_pExitButton->SetSize(500, 45);
@@ -82,14 +70,7 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	m_pExitButton->SetPaintBorderEnabled(false);
 	m_pExitButton->SetPaintEnabled(true);
 	m_pExitButton->SetPos(0, 0);
-	m_pExitButton->SetBlink(false);
-	m_pExitButton->ForceDepressed(false);
-	//m_pExitButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
-
-	m_pExitButton->SetCommand("quit");
-	m_pExitButton->OnCommand("quit");
-
-	//m_pExitText = new RichText(this, "RichText");
+	m_pExitButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 }
 
@@ -101,23 +82,14 @@ void CMainMenu::OnThink()
 	//vgui::input()->GetCursorPos(Cursor_x, Cursor_y);
 
 	if (m_pExitButton->IsCursorOver())
-		m_pExitBg->SetBgColor(Color(0, 0, 0, 125));
+		m_pExitButton->SetBgColor(Color(0, 0, 0, 125));
 	else
-		m_pExitBg->SetBgColor(Color(0, 0, 0, 0));
+		m_pExitButton->SetBgColor(Color(0, 0, 0, 0));
 }
 
 void CMainMenu::OnCommand(const char* pcCommand)
 {
-
-	if (pcCommand == "quit")
-	{
-		engine->ClientCmd("quit");
-		engine->ServerCmd("quit");
-	}
-	else
-	{
-		BaseClass::OnCommand(pcCommand);
-	}
+	BaseClass::OnCommand(pcCommand);
 }
 
 void CMainMenu::PaintBackground()
