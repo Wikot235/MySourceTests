@@ -76,10 +76,6 @@ private:
 
 void FX_ThumperDust( const CEffectData &data )
 {
-	Vector vecDustColor;
-	vecDustColor.x = 0.85f;
-	vecDustColor.y = 0.75f;
-	vecDustColor.z = 0.52f;
 
 	CSmartPtr<ThumperDustEmitter> pSimple = ThumperDustEmitter::Create( "thumperdust" );
 
@@ -117,7 +113,7 @@ void FX_ThumperDust( const CEffectData &data )
 
 	// Setup the color for these particles
 	engine->ComputeLighting( data.m_vOrigin, NULL, true, vecColor );
-	VectorLerp( vecColor, vecDustColor, 0.5, vecColor );
+	VectorLerp( vecColor, data.m_CustomColors.m_vecColor1, 0.5, vecColor );
 	vecColor *= 255;
 
 	for ( i = 0; i < numPuffs; i++ )

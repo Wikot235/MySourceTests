@@ -34,6 +34,8 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#include "../../game/client/vgui_WindowBackground.h"
+#include <ienginevgui.h>
 
 using namespace vgui;
 
@@ -760,6 +762,8 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 	}
 
 	m_hPreviousModal = 0;
+	
+	m_bIsNewFrame = false;
 
 	_title=null;
 	_moveable=true;
@@ -837,8 +841,8 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 		SetMaximizeButtonVisible(false);
 	}
 
-	_menuButton = new FrameSystemButton(this, "frame_menu");
-	_menuButton->SetMenu(GetSysMenu());
+	//_menuButton = new FrameSystemButton(this, "frame_menu");
+	//_menuButton->SetMenu(GetSysMenu());
 #endif
 	
 	SetupResizeCursors();
@@ -879,7 +883,7 @@ Frame::~Frame()
 	delete _minimizeButton;
 	delete _maximizeButton;
 	delete _closeButton;
-	delete _menuButton;
+	//delete _menuButton;
 	delete _minimizeToSysTrayButton;
 #endif
 	delete _title;
@@ -1122,12 +1126,12 @@ void Frame::OnFrameFocusChanged(bool bHasFocus)
 	_maximizeButton->SetDisabledLook(!bHasFocus);
 	_closeButton->SetDisabledLook(!bHasFocus);
 	_minimizeToSysTrayButton->SetDisabledLook(!bHasFocus);
-	_menuButton->SetEnabled(bHasFocus);
+	//_menuButton->SetEnabled(bHasFocus);
 	_minimizeButton->InvalidateLayout();
 	_maximizeButton->InvalidateLayout();
 	_minimizeToSysTrayButton->InvalidateLayout();
 	_closeButton->InvalidateLayout();
-	_menuButton->InvalidateLayout();
+	//_menuButton->InvalidateLayout();
 #endif
 
 	if (bHasFocus)
@@ -1255,10 +1259,10 @@ void Frame::PerformLayout()
 	_bottomRightGrip->MoveToFront();
 	
 	_maximizeButton->MoveToFront();
-	_menuButton->MoveToFront();
+	//_menuButton->MoveToFront();
 	_minimizeButton->MoveToFront();
 	_minimizeToSysTrayButton->MoveToFront();
-	_menuButton->SetBounds(5+2, 5+3, GetCaptionHeight()-5, GetCaptionHeight()-5);
+	//_menuButton->SetBounds(5+2, 5+3, GetCaptionHeight()-5, GetCaptionHeight()-5);
 #endif
 
 	float scale = 1;
@@ -1386,6 +1390,11 @@ void Frame::InternalSetTitle(const char *title)
 void Frame::SetMoveable(bool state)
 {
 	_moveable=state;
+}
+
+void Frame::MakeNewFrame(bool state)
+{
+	m_bIsNewFrame = state;
 }
 
 //-----------------------------------------------------------------------------
@@ -1600,7 +1609,57 @@ void Frame::PaintBackground()
 
 	BaseClass::PaintBackground();
 
-	if (_drawTitleBar)
+	if (m_bIsNewFrame)
+	{
+		_titleBarDisabledBgColor = titleColor;
+
+		int wide = GetWide();
+		int tall = surface()->GetFontTall(_title->GetFont());
+
+		int BarTall = 65;
+		int WindowTall = GetTall();
+
+		// caption
+		surface()->DrawSetColor(titleColor);
+		//int inset = m_bSmallCaption ? 3 : 5;
+		//int captionHeight = m_bSmallCaption ? 14: 28;
+
+		surface()->DrawFilledRect(0, 0, wide, BarTall);
+
+
+		surface()->DrawSetColor(Color(51, 51, 51, 255));
+		
+		surface()->DrawOutlinedRect(0, 0, wide, BarTall);
+		surface()->DrawOutlinedRect(1, 1, wide - 1, BarTall - 1);
+		surface()->DrawOutlinedRect(2, 2, wide - 2, BarTall - 2);
+
+		surface()->DrawOutlinedRect(0, BarTall - 3, wide, WindowTall);
+		surface()->DrawOutlinedRect(1, BarTall - 3, wide - 1, WindowTall - 1);
+		surface()->DrawOutlinedRect(2, BarTall - 2, wide - 2, WindowTall - 2);
+
+		if (_title)
+		{
+			int nTitleX = 50;
+			int nTitleWidth = wide - 72;
+			/*
+			int nTitleY;
+			if ( m_iTitleTextInsetYOverride )
+			{
+				nTitleY = m_iTitleTextInsetYOverride;
+			}
+			else
+			{
+				nTitleY = m_bSmallCaption ? 2 : 9;
+			}
+			*/
+			_title->SetPos(nTitleX, 19);
+			_title->SetSize(nTitleWidth, tall);
+			_title->SetFont(m_pHFontAlteDin);
+			_title->Paint();
+		}
+	}
+
+	if (_drawTitleBar && !m_bIsNewFrame)
 	{
 		int wide = GetWide();
 		int tall = surface()->GetFontTall(_title->GetFont());
@@ -1617,6 +1676,7 @@ void Frame::PaintBackground()
 			int nTitleX = m_iTitleTextInsetXOverride ? m_iTitleTextInsetXOverride : m_iTitleTextInsetX;
 			int nTitleWidth = wide - 72;
 #if !defined( _X360 )
+			/*
 			if ( _menuButton && _menuButton->IsVisible() )
 			{
 				int mw, mh;
@@ -1624,6 +1684,7 @@ void Frame::PaintBackground()
 				nTitleX += mw;
 				nTitleWidth -= mw;
 			}
+			*/
 #endif
 			int nTitleY;
 			if ( m_iTitleTextInsetYOverride )
@@ -1925,6 +1986,7 @@ Menu *Frame::GetSysMenu()
 void Frame::SetSysMenu(Menu *menu)
 {
 #if !defined( _X360 )
+/*
 	if (menu == _sysMenu)
 		return;
 	
@@ -1932,6 +1994,7 @@ void Frame::SetSysMenu(Menu *menu)
 	_sysMenu = menu;
 
 	_menuButton->SetMenu(_sysMenu);
+*/
 #endif
 }
 
@@ -2019,7 +2082,7 @@ void Frame::OnMousePressed(MouseCode code)
 void Frame::SetMenuButtonVisible(bool state)
 {
 #if !defined( _X360 )
-	_menuButton->SetVisible(state);
+	//_menuButton->SetVisible(state);
 #endif
 }
 
@@ -2031,7 +2094,7 @@ void Frame::SetMenuButtonVisible(bool state)
 void Frame::SetMenuButtonResponsive(bool state)
 {
 #if !defined( _X360 )
-	_menuButton->SetResponsive(state);
+	//_menuButton->SetResponsive(state);
 #endif
 }
 
