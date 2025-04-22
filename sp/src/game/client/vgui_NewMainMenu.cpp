@@ -78,7 +78,8 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	vgui::ivgui()->AddTickSignal(GetVPanel(), 100);
 
 	m_pBeginMissionButton = vgui::SETUP_PANEL(new vgui::Button(this, "BeginMission", "B E G I N   M I S S I O N", this, "beginmission"));
-	m_pBeginMissionButton->SetSize(500, 45);
+	m_pBeginMissionButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
+	m_pBeginMissionButton->SetSize( 500, 45 );
 	m_pBeginMissionButton->SetTextInset(30, 0);
 	m_pBeginMissionButton->SetFont(m_pHFontAlteDin);
 	m_pBeginMissionButton->SetPaintBorderEnabled(false);
@@ -87,6 +88,7 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	m_pBeginMissionButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 	m_pLoadGameButton = vgui::SETUP_PANEL(new vgui::Button(this, "LoadButton", "L O A D   S A V E", this, "loadsave"));
+	m_pLoadGameButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
 	m_pLoadGameButton->SetSize(500, 45);
 	m_pLoadGameButton->SetTextInset(30, 0);
 	m_pLoadGameButton->SetFont(m_pHFontAlteDin);
@@ -96,6 +98,7 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	m_pLoadGameButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 	m_pSettingsButton = vgui::SETUP_PANEL(new vgui::Button(this, "SettingsButton", "S E T T I N G S", this, "settings"));
+	m_pSettingsButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
 	m_pSettingsButton->SetSize(500, 45);
 	m_pSettingsButton->SetTextInset(30, 0);
 	m_pSettingsButton->SetFont(m_pHFontAlteDin);
@@ -105,12 +108,14 @@ CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
 	m_pSettingsButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 	m_pExitButton = vgui::SETUP_PANEL(new vgui::Button(this, "ExitButton", "Q U I T", this, "quit"));
+	m_pExitButton->MakeNewButton(true, vgui::Button::ButtonType::BUTTON_MAINMENU );
 	m_pExitButton->SetSize(500, 45);
 	m_pExitButton->SetTextInset(30, 0);
 	m_pExitButton->SetFont(m_pHFontAlteDin);
 	m_pExitButton->SetPaintBorderEnabled(false);
 	m_pExitButton->SetPaintEnabled(true);
 	m_pExitButton->SetPos(0, 255);
+	//m_pExitButton->SetBgColor( Color( 0, 0, 0, 0 ) );
 	m_pExitButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 }
@@ -121,6 +126,7 @@ CMainMenu::~CMainMenu()
 	delete m_pLoadGameButton;
 	delete m_pSettingsButton;
 	delete m_pExitButton;
+	delete this;
 }
 
 /*
@@ -141,12 +147,13 @@ void CMainMenu::OnThink()
 {
 	BaseClass::OnThink();
 
-	IsMouseOver(m_pExitButton);
-	IsMouseOver(m_pSettingsButton);
-	IsMouseOver(m_pLoadGameButton);
-	IsMouseOver(m_pBeginMissionButton);
+	//IsMouseOver(m_pExitButton);
+	
 
-	//GetAnimationController()->RunAnimationCommand(this, "BgColor", Color(0, 0, 0, 0), 1.f, 2, AnimationController::INTERPOLATOR_LINEAR);
+	//IsMouseOver(m_pSettingsButton);
+
+	//IsMouseOver(m_pLoadGameButton);
+	//IsMouseOver(m_pBeginMissionButton);
 
 }
 

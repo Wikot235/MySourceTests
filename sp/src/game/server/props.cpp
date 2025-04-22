@@ -3383,6 +3383,7 @@ void CPhysicsProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 	if( reason == PICKED_UP_BY_CANNON )
 	{
 		m_OnPhysGunOnlyPickup.FireOutput( pPhysGunUser, this );
+		m_bFirstCollisionAfterLaunch = false;
 	}
 
 	if ( reason == PUNTED_BY_CANNON )
@@ -3393,6 +3394,7 @@ void CPhysicsProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t r
 	if ( reason == PICKED_UP_BY_CANNON || reason == PICKED_UP_BY_PLAYER )
 	{
 		m_OnPlayerPickup.FireOutput( pPhysGunUser, this );
+		m_bFirstCollisionAfterLaunch = false;
 	}
 
 	CheckRemoveRagdolls();

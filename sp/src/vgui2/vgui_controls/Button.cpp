@@ -23,6 +23,7 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
+#include <vgui_controls/AnimationController.h>
 
 using namespace vgui;
 
@@ -104,6 +105,12 @@ Button::~Button()
 	{
 		_actionMessage->deleteThis();
 	}
+}
+
+void Button::MakeNewButton( bool state, vgui::Button::ButtonType type )
+{
+	m_bIsNewButton = state;
+	ThisButtonType = type;
 }
 
 //-----------------------------------------------------------------------------
@@ -902,9 +909,27 @@ void Button::OnSetState(int state)
 //-----------------------------------------------------------------------------
 void Button::OnCursorEntered()
 {
-	if (IsEnabled() && !IsSelected() )
+	if ( IsEnabled() && !IsSelected() )
 	{
 		SetArmed( true );
+
+		if ( m_bIsNewButton )
+		{
+
+			switch ( ThisButtonType )
+			{
+				case BUTTON_MAINMENU:
+					//SetBgColor( Color( 0, 0, 0, 0 ) );
+					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 125 ), 0.0f, 0.125f, AnimationController::INTERPOLATOR_LINEAR );
+					//GetAnimationController()->RunAnimationCommand( this, "alpha", 125, 0.05f, 0.125f, AnimationController::INTERPOLATOR_LINEAR );
+					break;
+
+				case BUTTON_NORMALWINDOW:
+					//Do nothing
+					break;
+			}
+
+		}
 	}
 }
 
@@ -916,6 +941,23 @@ void Button::OnCursorExited()
 	if ( !_buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && !IsSelected() )
 	{
 		SetArmed( false );
+
+		if ( m_bIsNewButton )
+		{
+
+			switch ( ThisButtonType )
+			{
+				case BUTTON_MAINMENU:
+					//SetBgColor( Color( 0, 0, 0, 125 ) );
+					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 0 ), 1.f, 0.35f, AnimationController::INTERPOLATOR_LINEAR );
+					//SetBgColor( Color( 0, 0, 0, 0 ) );
+					break;
+
+				case BUTTON_NORMALWINDOW:
+					//Do nothing
+					break;
+			}
+		}
 	}
 }
 

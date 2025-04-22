@@ -210,6 +210,18 @@ protected:
 		ALL_FLAGS				= 0xFFFF,
 	};
 
+	enum ButtonType
+	{
+		BUTTON_MAINMENU,
+		BUTTON_NORMALWINDOW
+	};
+
+	ButtonType ThisButtonType;
+
+	bool				m_bIsNewButton;
+
+	void MakeNewButton( bool state, vgui::Button::ButtonType type );
+
 	CUtlFlags< unsigned short > _buttonFlags;	// see ButtonFlags_t
 	int                _mouseClickMask;
 	KeyValues		  *_actionMessage;

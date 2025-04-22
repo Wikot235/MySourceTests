@@ -212,7 +212,7 @@ static void CreateFleckParticles( const Vector& origin, const Vector &color, tra
 			break;
 
 		pFleckParticle->m_flLifetime	= 0.0f;
-		pFleckParticle->m_flDieTime		= 3.0f;
+		pFleckParticle->m_flDieTime		= 10.0f;
 
 		dir[0] = trace->plane.normal[0] + random->RandomFloat( -flAngularSpray, flAngularSpray );
 		dir[1] = trace->plane.normal[1] + random->RandomFloat( -flAngularSpray, flAngularSpray );

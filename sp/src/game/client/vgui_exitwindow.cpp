@@ -12,7 +12,7 @@ class ExitWindow : public Frame
 	DECLARE_CLASS_SIMPLE(ExitWindow, Frame);
 
 	ExitWindow(vgui::VPANEL parent);
-	~ExitWindow() {};
+	~ExitWindow();
 	
 protected:
 	virtual void OnThink();
@@ -23,6 +23,7 @@ private:
 	vgui::Button* m_pQuit;
 	vgui::Button* m_pCancel;
 
+	vgui::Label* m_pLabel;
 };
 
 ExitWindow::ExitWindow(vgui::VPANEL parent) : BaseClass(NULL, "ExitWindow")
@@ -67,6 +68,22 @@ ExitWindow::ExitWindow(vgui::VPANEL parent) : BaseClass(NULL, "ExitWindow")
 	m_pCancel->SetPos(575, 305);
 	m_pCancel->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
+	m_pLabel = vgui::SETUP_PANEL( new vgui::Label( this, "Label", "Are you sure you wan't to quit Project R?" ) );
+	m_pLabel->SetSize( 600, 150 );
+	m_pLabel->SetContentAlignment( vgui::Label::Alignment::a_northwest );
+	m_pLabel->SetFont( m_pHFontAlteDin );
+	m_pLabel->SetPaintBorderEnabled( false );
+	m_pLabel->SetPaintEnabled( true );
+	m_pLabel->SetPos( 57, 110 );
+
+}
+
+ExitWindow::~ExitWindow()
+{
+	delete m_pQuit;
+	delete m_pCancel;
+	delete m_pLabel;
+	delete this;
 }
 
 void ExitWindow::PaintBackground()

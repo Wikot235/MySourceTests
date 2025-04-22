@@ -1,4 +1,3 @@
-#include "cbase.h"
 #include <vgui/IVGui.h>
 #include <vgui_controls/Frame.h>
 
