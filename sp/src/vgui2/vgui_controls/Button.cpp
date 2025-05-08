@@ -911,7 +911,6 @@ void Button::OnCursorEntered()
 {
 	if ( IsEnabled() && !IsSelected() )
 	{
-		SetArmed( true );
 
 		if ( m_bIsNewButton )
 		{
@@ -920,7 +919,8 @@ void Button::OnCursorEntered()
 			{
 				case BUTTON_MAINMENU:
 					//SetBgColor( Color( 0, 0, 0, 0 ) );
-					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 125 ), 0.0f, 0.125f, AnimationController::INTERPOLATOR_LINEAR );
+					GetAnimationController()->RunAnimationCommand( this, "xpos", 25, 0.0f, 0.2f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
+					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 125 ), 0.0f, 0.2f, AnimationController::INTERPOLATOR_LINEAR );
 					//GetAnimationController()->RunAnimationCommand( this, "alpha", 125, 0.05f, 0.125f, AnimationController::INTERPOLATOR_LINEAR );
 					break;
 
@@ -930,6 +930,9 @@ void Button::OnCursorEntered()
 			}
 
 		}
+
+		SetArmed( true );
+
 	}
 }
 
@@ -940,7 +943,6 @@ void Button::OnCursorExited()
 {
 	if ( !_buttonFlags.IsFlagSet( BUTTON_KEY_DOWN ) && !IsSelected() )
 	{
-		SetArmed( false );
 
 		if ( m_bIsNewButton )
 		{
@@ -949,6 +951,7 @@ void Button::OnCursorExited()
 			{
 				case BUTTON_MAINMENU:
 					//SetBgColor( Color( 0, 0, 0, 125 ) );
+					GetAnimationController()->RunAnimationCommand( this, "xpos", 0, 0.0f, 0.2f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
 					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 0 ), 1.f, 0.35f, AnimationController::INTERPOLATOR_LINEAR );
 					//SetBgColor( Color( 0, 0, 0, 0 ) );
 					break;
@@ -958,6 +961,9 @@ void Button::OnCursorExited()
 					break;
 			}
 		}
+
+		SetArmed( false );
+		
 	}
 }
 

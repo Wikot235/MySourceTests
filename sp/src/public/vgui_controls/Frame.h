@@ -32,6 +32,7 @@ class Frame : public EditablePanel
 	DECLARE_CLASS_SIMPLE( Frame, EditablePanel );
 
 public:
+
 	Frame(Panel *parent, const char *panelName, bool showTaskbarIcon = true, bool bPopup = true );
 	virtual ~Frame();
 
@@ -57,8 +58,6 @@ public:
 
 	// Set the movability of the panel
 	virtual void SetMoveable(bool state);
-
-	void MakeNewFrame(bool state);
 
 	// Check the movability of the panel
 	virtual bool IsMoveable();
@@ -119,7 +118,21 @@ public:
 			input:	"text"	- string to set the title to be
 	*/
 
-	// Load the control settings 
+	enum FrameType
+	{
+		FRAME_OTHER,
+		FRAME_POPUPWINDOW	
+	};
+
+	FrameType ThisFrameType;
+
+	bool m_bIsNewFrame;
+
+	bool m_bIsOepn;
+
+	void MakeNewFrame ( bool state, FrameType type );
+
+	// Load the control settings
 	virtual void LoadControlSettings( const char *dialogResourceName, const char *pathID = NULL, KeyValues *pPreloadedKeyValues = NULL, KeyValues *pConditions = NULL );
 
 	void SetChainKeysToParent( bool state );
@@ -242,8 +255,6 @@ private:
 	int		m_nGripperWidth;
 	VPANEL	m_hPreviousModal;
 	HFont	m_hCustomTitleFont;
-
-	bool m_bIsNewFrame;
 
 	bool	_sizeable : 1;
 	bool	_moveable : 1;

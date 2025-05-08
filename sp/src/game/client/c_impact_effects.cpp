@@ -212,7 +212,7 @@ static void CreateFleckParticles( const Vector& origin, const Vector &color, tra
 			break;
 
 		pFleckParticle->m_flLifetime	= 0.0f;
-		pFleckParticle->m_flDieTime		= 10.0f;
+		pFleckParticle->m_flDieTime		= random->RandomFloat( 10, 15 );
 
 		dir[0] = trace->plane.normal[0] + random->RandomFloat( -flAngularSpray, flAngularSpray );
 		dir[1] = trace->plane.normal[1] + random->RandomFloat( -flAngularSpray, flAngularSpray );
@@ -474,8 +474,8 @@ void FX_DebrisFlecks( const Vector& origin, trace_t *tr, char materialType, int 
 #endif
 }
 
-#define	GLASS_SHARD_MIN_LIFE	2.5f
-#define	GLASS_SHARD_MAX_LIFE	5.0f
+#define	GLASS_SHARD_MIN_LIFE	10.f
+#define	GLASS_SHARD_MAX_LIFE	15.f
 #define	GLASS_SHARD_NOISE		0.8
 #define	GLASS_SHARD_GRAVITY		800
 #define	GLASS_SHARD_DAMPING		0.3
@@ -686,7 +686,7 @@ void FX_AntlionImpact( const Vector &pos, trace_t *trace )
 		if ( pFleckParticle == NULL )
 			break;
 
-		pFleckParticle->m_flLifeRemaining = 3.0f;
+		pFleckParticle->m_flLifeRemaining = random->RandomFloat( 10, 15 );
 
 		dir[0] = shotDir[0] + random->RandomFloat( -flAngularSpray, flAngularSpray );
 		dir[1] = shotDir[1] + random->RandomFloat( -flAngularSpray, flAngularSpray );

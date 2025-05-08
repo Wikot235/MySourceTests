@@ -10,7 +10,7 @@ WindowBackground::WindowBackground(vgui::VPANEL parent) : BaseClass(NULL, "Windo
 {
 	SetParent(parent);
 	SetKeyBoardInputEnabled(false);
-	SetMouseInputEnabled(false);
+	SetMouseInputEnabled(true);
 	SetProportional(false);
 	SetTitleBarVisible(false);
 	SetMinimizeButtonVisible(false);
@@ -23,14 +23,17 @@ WindowBackground::WindowBackground(vgui::VPANEL parent) : BaseClass(NULL, "Windo
 
 	SetPos(0, 0);
 	SetSize(ScreenWidth(), ScreenHeight());
-
-	vgui::ivgui()->AddTickSignal(GetVPanel(), 100);
 }
 
 void WindowBackground::PaintBackground()
 {
 	SetBgColor(Color(0, 0, 0, 125));
 	BaseClass::PaintBackground();
+}
+
+void WindowBackground::OnThink()
+{
+	BaseClass::OnThink();
 }
 
 void WindowBackground::OnCommand(const char* pcCommand)

@@ -764,6 +764,7 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 	m_hPreviousModal = 0;
 	
 	m_bIsNewFrame = false;
+	m_bIsOepn = true;
 
 	_title=null;
 	_moveable=true;
@@ -1392,9 +1393,10 @@ void Frame::SetMoveable(bool state)
 	_moveable=state;
 }
 
-void Frame::MakeNewFrame(bool state)
+void Frame::MakeNewFrame(bool state, FrameType type)
 {
 	m_bIsNewFrame = state;
+	ThisFrameType = type;
 }
 
 //-----------------------------------------------------------------------------
@@ -1875,6 +1877,8 @@ const char *Frame::GetDescription()
 //-----------------------------------------------------------------------------
 void Frame::OnClose()
 {
+	m_bIsOepn = false;
+
 	// if we're modal, release that before we hide the window else the wrong window will get focus
 	if (input()->GetAppModalSurface() == GetVPanel())
 	{
@@ -1891,7 +1895,15 @@ void Frame::OnClose()
 	if (m_flTransitionEffectTime && !m_bDisableFadeEffect)
 	{
 		// begin the hide transition effect
-		GetAnimationController()->RunAnimationCommand(this, "alpha", 0.0f, 0.0f, m_flTransitionEffectTime, AnimationController::INTERPOLATOR_LINEAR);
+		
+		if ( m_bIsNewFrame )
+		{
+
+			GetAnimationController()->RunAnimationCommand( this, "xpos", 0.0f, 0, 1.0f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
+		}
+		
+		GetAnimationController()->RunAnimationCommand( this, "alpha", 0.0f, 0.0f, 0.2f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
+
 		m_bFadingOut = true;
 		// move us to the back of the draw order (so that fading out over the top of other dialogs doesn't look wierd)
 		surface()->MovePopupToBack(GetVPanel());

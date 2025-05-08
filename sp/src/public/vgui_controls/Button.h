@@ -170,6 +170,18 @@ public:
 	virtual void NavigateTo();
 	virtual void NavigateFrom();
 
+	enum ButtonType
+	{
+		BUTTON_NORMALWINDOW,
+		BUTTON_MAINMENU
+	};
+
+	ButtonType ThisButtonType;
+
+	bool				m_bIsNewButton;
+
+	void MakeNewButton( bool state, ButtonType type );
+
 protected:
 	virtual void DrawFocusBorder(int tx0, int ty0, int tx1, int ty1);
 
@@ -210,18 +222,6 @@ protected:
 		ALL_FLAGS				= 0xFFFF,
 	};
 
-	enum ButtonType
-	{
-		BUTTON_MAINMENU,
-		BUTTON_NORMALWINDOW
-	};
-
-	ButtonType ThisButtonType;
-
-	bool				m_bIsNewButton;
-
-	void MakeNewButton( bool state, vgui::Button::ButtonType type );
-
 	CUtlFlags< unsigned short > _buttonFlags;	// see ButtonFlags_t
 	int                _mouseClickMask;
 	KeyValues		  *_actionMessage;
@@ -243,6 +243,7 @@ protected:
 	unsigned short	   m_sArmedSoundName, m_sDepressedSoundName, m_sReleasedSoundName;
 	bool m_bSelectionStateSaved;
 	bool m_bStaySelectedOnClick;
+
 };
 
 } // namespace vgui

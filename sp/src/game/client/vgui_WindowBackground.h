@@ -20,6 +20,7 @@ class WindowBackground : public vgui::Frame
 protected:
 	virtual void OnCommand(const char* pcCommand);
 	virtual void PaintBackground();
+	virtual void OnThink();
 
 private:
 

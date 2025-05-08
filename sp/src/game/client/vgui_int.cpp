@@ -133,6 +133,8 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 #if defined( TRACK_BLOCKING_IO )
 	iopanel->Destroy();
 #endif
+	mainmenu->Destroy();
+
 	fps->Destroy();
 	messagechars->Destroy();
 	loadingdisc->Destroy();
@@ -143,6 +145,8 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
+	VPANEL gameUIPanel = enginevgui->GetPanel( PANEL_GAMEUIDLL );
+	mainmenu->Create( gameUIPanel );
 
 	loadingdisc->Create( gameToolParent );
 	messagechars->Create( gameToolParent );
@@ -208,8 +212,8 @@ void VGui_CreateGlobalPanels( void )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
 
-	VPANEL gameUIPanel = enginevgui->GetPanel(PANEL_GAMEUIDLL);
 
+	VPANEL gameUIPanel = enginevgui->GetPanel( PANEL_GAMEUIDLL );
 	mainmenu->Create(gameUIPanel);
 
 	OverrideUI->Create(NULL);
@@ -250,13 +254,14 @@ void VGui_Shutdown()
 #if defined( TRACK_BLOCKING_IO )
 	iopanel->Destroy();
 #endif
+
+	mainmenu->Destroy();
+
 	fps->Destroy();
 
 	messagechars->Destroy();
 	loadingdisc->Destroy();
 	internalCenterPrint->Destroy();
-
-	mainmenu->Destroy();
 
 	if ( g_pClientMode )
 	{

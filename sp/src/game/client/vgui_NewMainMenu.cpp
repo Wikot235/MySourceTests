@@ -21,171 +21,178 @@
 
 using namespace vgui;
 
-class CMainMenu : public vgui::Frame
+class CMainMenu: public vgui::Frame
 {
 public:
 
-    DECLARE_CLASS_SIMPLE(CMainMenu, vgui::Frame);
+	DECLARE_CLASS_SIMPLE( CMainMenu, vgui::Frame );
 
-    CMainMenu(vgui::VPANEL parent);
+	CMainMenu( vgui::VPANEL parent );
 	~CMainMenu();
 
 	//void InitializeButton(int x, int y, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer);
+	void InitializeButton( int order, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer );
 
 	virtual void OnThink();
 
-	void IsMouseOver(vgui::Button* button);
+	void IsMouseOver( vgui::Button* button );
 
 	bool IsWindowOpen;
 
 protected:
-	virtual void OnCommand(const char* pcCommand);
+	virtual void OnCommand( const char* pcCommand );
 	virtual void PaintBackground();
-	//void InitializeButton(int x, int y, const char ButtonName, const char Text, const char Command, vgui::Button*& ButtonPointer);
 
 private:
-	VPANEL GameUIPanel = enginevgui->GetPanel(PANEL_GAMEUIDLL);
+	VPANEL GameUIPanel = enginevgui->GetPanel( PANEL_GAMEUIDLL );
 
-	vgui::Button* m_pExitButton;
-	vgui::Button* m_pSettingsButton;
-	vgui::Button* m_pLoadGameButton;
 	vgui::Button* m_pBeginMissionButton;
+	vgui::Button* m_pLoadGameButton;
+	vgui::Button* m_pSettingsButton;
+	vgui::Button* m_pExitButton;
+
+	vgui::Button* m_pResumeButton;
+	vgui::Button* m_pDisconnectButton;
+
+	bool IsInGame;
+
+	float ScreenRatio[2];
+
+	vgui::HFont AlteDinDynamic;
 };
 
 
-CMainMenu::CMainMenu(vgui::VPANEL parent) : BaseClass(NULL, "NewMainMenu")
+CMainMenu::CMainMenu( vgui::VPANEL parent ): BaseClass( NULL, "NewMainMenu" )
 {
-	SetParent(parent);
+	SetParent( parent );
 
-	LoadControlSettings("resource/ui/NewMainMenu.res");
+	//LoadControlSettings("resource/ui/NewMainMenu.res");
 
 	IsWindowOpen = false;
+	
+	ScreenRatio[0] = ScreenWidth() / 1920.f;
+	ScreenRatio[1] = ScreenHeight() / 1080.f;
 
-	SetKeyBoardInputEnabled(true);
-	SetMouseInputEnabled(true);
-	SetProportional(false);
-	SetTitleBarVisible(false);
-	SetMinimizeButtonVisible(false);
-	SetRoundedCorners(0);
-	SetMaximizeButtonVisible(false);
-	SetCloseButtonVisible(false);
-	SetSizeable(false);
-	SetMoveable(false);
-	SetVisible(true);
-	SetPos(460, 500);
-	SetSize(500, 300);
+	vgui::surface()->AddCustomFontFile( "AlteDin", "ProjectR/resource/AlteDin1451.ttf" );
+	AlteDinDynamic = vgui::surface()->CreateFont();
+	AlteDinDynamic = vgui::surface()->SetFontGlyphSet(AlteDinDynamic, "AlteDin", 25 * ScreenRatio[1], 0, 0, 5, 0, 0);
 
-	vgui::ivgui()->AddTickSignal(GetVPanel(), 100);
 
-	m_pBeginMissionButton = vgui::SETUP_PANEL(new vgui::Button(this, "BeginMission", "B E G I N   M I S S I O N", this, "beginmission"));
-	m_pBeginMissionButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
-	m_pBeginMissionButton->SetSize( 500, 45 );
-	m_pBeginMissionButton->SetTextInset(30, 0);
-	m_pBeginMissionButton->SetFont(m_pHFontAlteDin);
-	m_pBeginMissionButton->SetPaintBorderEnabled(false);
-	m_pBeginMissionButton->SetPaintEnabled(true);
-	m_pBeginMissionButton->SetPos(0, 255 - 65 * 3);
-	m_pBeginMissionButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
+	SetKeyBoardInputEnabled( true );
+	SetMouseInputEnabled( true );
 
-	m_pLoadGameButton = vgui::SETUP_PANEL(new vgui::Button(this, "LoadButton", "L O A D   S A V E", this, "loadsave"));
-	m_pLoadGameButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
-	m_pLoadGameButton->SetSize(500, 45);
-	m_pLoadGameButton->SetTextInset(30, 0);
-	m_pLoadGameButton->SetFont(m_pHFontAlteDin);
-	m_pLoadGameButton->SetPaintBorderEnabled(false);
-	m_pLoadGameButton->SetPaintEnabled(true);
-	m_pLoadGameButton->SetPos(0, 255 - 65 * 2);
-	m_pLoadGameButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
+	SetProportional( false );
+	SetTitleBarVisible( false );
+	SetMinimizeButtonVisible( false );
 
-	m_pSettingsButton = vgui::SETUP_PANEL(new vgui::Button(this, "SettingsButton", "S E T T I N G S", this, "settings"));
-	m_pSettingsButton->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
-	m_pSettingsButton->SetSize(500, 45);
-	m_pSettingsButton->SetTextInset(30, 0);
-	m_pSettingsButton->SetFont(m_pHFontAlteDin);
-	m_pSettingsButton->SetPaintBorderEnabled(false);
-	m_pSettingsButton->SetPaintEnabled(true);
-	m_pSettingsButton->SetPos(0, 255 - 65);
-	m_pSettingsButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
+	SetRoundedCorners( 0 );
+	SetMaximizeButtonVisible( false );
+	SetCloseButtonVisible( false );
 
-	m_pExitButton = vgui::SETUP_PANEL(new vgui::Button(this, "ExitButton", "Q U I T", this, "quit"));
-	m_pExitButton->MakeNewButton(true, vgui::Button::ButtonType::BUTTON_MAINMENU );
-	m_pExitButton->SetSize(500, 45);
-	m_pExitButton->SetTextInset(30, 0);
-	m_pExitButton->SetFont(m_pHFontAlteDin);
-	m_pExitButton->SetPaintBorderEnabled(false);
-	m_pExitButton->SetPaintEnabled(true);
-	m_pExitButton->SetPos(0, 255);
-	//m_pExitButton->SetBgColor( Color( 0, 0, 0, 0 ) );
-	m_pExitButton->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
+	SetSizeable( false );
+	SetMoveable( false );
+	SetVisible( true );
 
+	SetPos( 460 * ScreenRatio[0], 500 * ScreenRatio[1] );
+	SetSize( 800 * ScreenRatio[0], ScreenHeight() );
+
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+
+	if ( pPlayer )
+	{
+		InitializeButton( 1, "ResumeGame", "R E S U M E   G A M E", "resumegame", m_pResumeButton );
+		InitializeButton( 2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton );
+		InitializeButton( 3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton );
+		InitializeButton( 4, "DisconnectButton", "B A C K   T O   M A I N   M E N U ", "disconnect", m_pDisconnectButton );
+		InitializeButton( 5, "ExitButton", "Q U I T", "quit", m_pExitButton );
+		IsInGame = true;
+	}
+	else
+	{
+		InitializeButton( 1, "BeginMission", "B E G I N   M I S S I O N", "beginmission", m_pBeginMissionButton );
+		InitializeButton( 2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton );
+		InitializeButton( 3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton );
+		InitializeButton( 4, "ExitButton", "Q U I T", "quit", m_pExitButton );
+		IsInGame = false;
+	}
 }
 
 CMainMenu::~CMainMenu()
 {
-	delete m_pBeginMissionButton;
-	delete m_pLoadGameButton;
-	delete m_pSettingsButton;
-	delete m_pExitButton;
-	delete this;
+
 }
 
-/*
-void CMainMenu::InitializeButton(int x, int y, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer)
+
+void CMainMenu::InitializeButton( int order, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer )
 {
-	ButtonPointer = new vgui::Button(this, ButtonName, ButtonName, this, Command);
-	ButtonPointer->SetSize(500, 45);
-	ButtonPointer->SetTextInset(30, 0);
-	ButtonPointer->SetFont(m_pHFontAlteDin);
-	ButtonPointer->SetPaintBorderEnabled(false);
-	ButtonPointer->SetPaintEnabled(true);
-	ButtonPointer->SetPos(x, y);
-	ButtonPointer->SetButtonActivationType(vgui::Button::ACTIVATE_ONRELEASED);
+	ButtonPointer = vgui::SETUP_PANEL( new vgui::Button( this, ButtonName, Text, this, Command ) );
+	ButtonPointer->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
+	ButtonPointer->SetSize( 500 * ScreenRatio[0], 45 * ScreenRatio[1] );
+	ButtonPointer->SetTextInset( 30 * ScreenRatio[0], 0 );
+	ButtonPointer->SetFont( AlteDinDynamic );
+	ButtonPointer->SetPaintBorderEnabled( false );
+	ButtonPointer->SetPaintEnabled( true );
+	ButtonPointer->SetPos( 0, (30 + 65 * order) * ScreenRatio[1] );
+	ButtonPointer->SetButtonActivationType( vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED );
 }
-*/
 
 void CMainMenu::OnThink()
 {
 	BaseClass::OnThink();
-
-	//IsMouseOver(m_pExitButton);
-	
-
-	//IsMouseOver(m_pSettingsButton);
-
-	//IsMouseOver(m_pLoadGameButton);
-	//IsMouseOver(m_pBeginMissionButton);
-
 }
 
-void CMainMenu::IsMouseOver(vgui::Button* button)
+/*
+void CMainMenu::IsMouseOver( vgui::Button* button )
 {
-	if (button->IsCursorOver())
+	if ( button->IsCursorOver() )
 
-		button->SetBgColor(Color(0, 0, 0, 125));
+		button->SetBgColor( Color( 0, 0, 0, 125 ) );
 	else
-		button->SetBgColor(Color(0, 0, 0, 0));
+		button->SetBgColor( Color( 0, 0, 0, 0 ) );
 }
+*/
 
-void CMainMenu::OnCommand(const char* pcCommand)
+void CMainMenu::OnCommand( const char* pcCommand )
 {
-
-	if (!Q_stricmp(pcCommand, "quit"))
+	if ( !Q_stricmp( pcCommand, "beginmission" ) )
 	{
-		backgroundwindow->Create(GameUIPanel);
-		exitwindow->Create(GameUIPanel);
+		//engine->ClientCmd( "gamemenucommand opennewgamedialog" );
+		engine->ClientCmd( "map testmap01" );
+		//delete this;
+	}
+	else if ( !Q_stricmp( pcCommand, "loadsave" ) )
+	{
+		engine->ClientCmd( "gamemenucommand openloadgamedialog" );
+	}
+	else if ( !Q_stricmp( pcCommand, "settings" ) )
+	{
+		engine->ClientCmd( "gamemenucommand openoptionsdialog" );
+	}
+	else if ( !Q_stricmp( pcCommand, "disconnect" ) )
+	{
+		engine->ClientCmd( "gamemenucommand disconnect" );
+	}
+	else if ( !Q_stricmp( pcCommand, "resumegame" ) )
+	{
+		engine->ClientCmd( "gamemenucommand resumegame" );
+	}
+	else if ( !Q_stricmp( pcCommand, "quit" ) )
+	{
+		backgroundwindow->Create( GameUIPanel );
+		exitwindow->Create( GameUIPanel );
 	}
 
-	BaseClass::OnCommand(pcCommand);
+	BaseClass::OnCommand( pcCommand );
 }
 
 void CMainMenu::PaintBackground()
 {
-	SetBgColor(Color(0, 0, 0, 0));
+	SetBgColor( Color( 0, 0, 0, 0 ) );
 	BaseClass::PaintBackground();
 }
 
 
-class CMainMenuInterface : public IMainMenu
+class CMainMenuInterface: public IMainMenu
 {
 private:
 	CMainMenu* MainMenu;
@@ -194,18 +201,18 @@ public:
 	{
 		MainMenu = NULL;
 	}
-	void Create(vgui::VPANEL parent)
+	void Create( vgui::VPANEL parent )
 	{
-		MainMenu = new CMainMenu(parent);
+		MainMenu = new CMainMenu( parent );
 	}
 	void Destroy()
 	{
-		if (MainMenu)
+		if ( MainMenu )
 		{
-			MainMenu->SetParent((vgui::Panel*)NULL);
+			MainMenu->SetParent( ( vgui::Panel* )NULL );
 			delete MainMenu;
 		}
 	}
 };
 static CMainMenuInterface g_MainMenu;
-IMainMenu* mainmenu = (IMainMenu*)&g_MainMenu;
+IMainMenu* mainmenu = ( IMainMenu* )&g_MainMenu;

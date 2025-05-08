@@ -26,15 +26,14 @@ private:
 	vgui::Label* m_pLabel;
 };
 
-ExitWindow::ExitWindow(vgui::VPANEL parent) : BaseClass(NULL, "ExitWindow")
+ExitWindow::ExitWindow( vgui::VPANEL parent ) : BaseClass(NULL, "ExitWindow")
 {
-	SetParent(parent);
 	
 	LoadControlSettings("resource/ui/ExitWindow.res");
 
 	SetTitle("Q U I T   G A M E", true);
 
-	MakeNewFrame(true);
+	MakeNewFrame(true, FRAME_POPUPWINDOW);
 	SetKeyBoardInputEnabled(true);
 	SetMouseInputEnabled(true);
 	SetProportional(false);
@@ -76,6 +75,8 @@ ExitWindow::ExitWindow(vgui::VPANEL parent) : BaseClass(NULL, "ExitWindow")
 	m_pLabel->SetPaintEnabled( true );
 	m_pLabel->SetPos( 57, 110 );
 
+
+	MoveToFront();
 }
 
 ExitWindow::~ExitWindow()
@@ -95,6 +96,9 @@ void ExitWindow::PaintBackground()
 void ExitWindow::OnThink()
 {
 	BaseClass::OnThink();
+
+	if ( m_bIsOepn )
+		MoveToFront();
 
 	if (m_pQuit->IsCursorOver())
 		m_pQuit->SetBgColor(Color(51, 51, 51, 255));
