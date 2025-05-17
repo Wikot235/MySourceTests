@@ -229,7 +229,7 @@ float CNPC_CombineS::GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDama
 		{
 			
 #ifdef MAPBASE
-			// Now you don't have to change the headshot damage in 
+			// Now you can change the multiplier of headshot damage in console!
 			return sk_combine_head_dmg_multiplier.GetFloat();
 #else
 			// Soldiers take double headshot damage
