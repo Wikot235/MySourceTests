@@ -3786,7 +3786,7 @@ void CNPC_AttackHelicopter::Event_Killed( const CTakeDamageInfo &info )
 
 	m_lifeState			= LIFE_DYING;
 	
-	if ( GetSleepState() == AISS_WAITING_FOR_INPUT )
+	if ( GetSleepState() != AISS_WAITING_FOR_INPUT )
 	{
 		CSoundEnvelopeController& controller = CSoundEnvelopeController::GetController();
 		controller.SoundChangeVolume( m_pGunFiringSound, 0.0, 0.1f );
