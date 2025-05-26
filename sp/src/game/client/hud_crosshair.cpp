@@ -39,6 +39,7 @@ ConVar cl_crosshair_size( "cl_crosshair_size", "10", FCVAR_ARCHIVE );
 ConVar cl_crosshair_thickness( "cl_crosshair_thickness", "2", FCVAR_ARCHIVE );
 ConVar cl_crosshair_gap_size( "cl_crosshair_gap_size", "10", FCVAR_ARCHIVE );
 ConVar cl_crosshair_dot( "cl_crosshair_dot", "1", FCVAR_ARCHIVE );
+ConVar cl_crosshair_t_shape( "cl_crosshair_t_shape", "0", FCVAR_ARCHIVE );
 
 ConVar cl_crosshair_red( "cl_crosshair_red", "255", FCVAR_ARCHIVE );
 ConVar cl_crosshair_green( "cl_crosshair_green", "255", FCVAR_ARCHIVE );
@@ -293,11 +294,14 @@ void CHudCrosshair::PaintNewCrosshair()
 			Crosshair0y + thickness + outline_thickness );
 
 		// Top
-		vgui::surface()->DrawFilledRect(
-			Crosshair0x - outline_thickness,
-			Crosshair0y - size - gap_size - outline_thickness,
-			Crosshair0x + thickness + outline_thickness,
-			Crosshair0y - gap_size + outline_thickness );
+		if ( cl_crosshair_t_shape.GetInt() == 0 )
+		{
+			vgui::surface()->DrawFilledRect(
+				Crosshair0x - outline_thickness,
+				Crosshair0y - size - gap_size - outline_thickness,
+				Crosshair0x + thickness + outline_thickness,
+				Crosshair0y - gap_size + outline_thickness );
+		}
 
 		// Down
 		vgui::surface()->DrawFilledRect(
@@ -334,11 +338,14 @@ void CHudCrosshair::PaintNewCrosshair()
 		Crosshair0y + thickness );
 
 	// Top
-	vgui::surface()->DrawFilledRect(
-		Crosshair0x,
-		Crosshair0y - size - gap_size,
-		Crosshair0x + thickness,
-		Crosshair0y - gap_size );
+	if ( cl_crosshair_t_shape.GetInt() == 0 )
+	{
+		vgui::surface()->DrawFilledRect(
+			Crosshair0x,
+			Crosshair0y - size - gap_size,
+			Crosshair0x + thickness,
+			Crosshair0y - gap_size );
+	}
 
 	// Down
 	vgui::surface()->DrawFilledRect(
