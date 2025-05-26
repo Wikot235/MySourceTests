@@ -252,10 +252,13 @@ void CHudCrosshair::GetDrawPosition ( float *pX, float *pY, bool *pbBehindCamera
 #ifdef MAPBASE
 void CHudCrosshair::PaintNewCrosshair()
 {
-	int size = cl_crosshair_size.GetInt();
-	int thickness = cl_crosshair_thickness.GetInt();
-	int outline_thickness = cl_crosshair_outline_thickness.GetInt();
-	int gap_size = cl_crosshair_gap_size.GetInt();
+	float Screenratio;
+	Screenratio = ScreenHeight() / 1080.f;
+
+	int size = RoundFloatToInt( cl_crosshair_size.GetInt() * Screenratio );
+	int thickness = RoundFloatToInt( cl_crosshair_thickness.GetInt() * Screenratio );
+	int outline_thickness = RoundFloatToInt( cl_crosshair_outline_thickness.GetInt() * Screenratio );
+	int gap_size = RoundFloatToInt( cl_crosshair_gap_size.GetInt() * Screenratio );
 
 	int Crosshair0x = ScreenWidth() / 2 - thickness / 2;
 	int Crosshair0y = ScreenHeight() / 2 - thickness / 2;
