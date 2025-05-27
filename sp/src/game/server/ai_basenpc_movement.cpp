@@ -23,9 +23,9 @@
 #include "tier0/memdbgon.h"
 
 #ifdef MAPBASE
-ConVar ai_jump_max_distance_up( "ai_jump_max_distance_up", "80", FCVAR_CHEAT );
+ConVar ai_jump_max_up( "ai_jump_max_up", "80", FCVAR_CHEAT );
 ConVar ai_jump_max_distance( "ai_jump_max_distance", "250", FCVAR_CHEAT );
-ConVar ai_jump_max_distance_down( "ai_jump_max_distance_down", "192", FCVAR_CHEAT );
+ConVar ai_jump_max_down( "ai_jump_max_down", "192", FCVAR_CHEAT );
 #endif
 
 //=============================================================================
@@ -325,9 +325,9 @@ bool CAI_BaseNPC::IsJumpLegal( const Vector &startPos, const Vector &apex, const
 bool CAI_BaseNPC::IsJumpLegal( const Vector &startPos, const Vector &apex, const Vector &endPos ) const
 {
 #ifdef MAPBASE
-	float MAX_JUMP_RISE = ai_jump_max_distance_up.GetFloat();
+	float MAX_JUMP_RISE = ai_jump_max_up.GetFloat();
 	float MAX_JUMP_DISTANCE = ai_jump_max_distance.GetFloat();
-	float MAX_JUMP_DROP = ai_jump_max_distance_down.GetFloat();
+	float MAX_JUMP_DROP = ai_jump_max_down.GetFloat();
 #else
 	const float MAX_JUMP_RISE		= 80.0f;
 	const float MAX_JUMP_DISTANCE	= 250.0f;
