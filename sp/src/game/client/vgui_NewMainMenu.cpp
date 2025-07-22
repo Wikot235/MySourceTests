@@ -21,21 +21,20 @@
 
 using namespace vgui;
 
-class CMainMenu: public vgui::Frame
+class CMainMenu: public Frame
 {
 public:
 
-	DECLARE_CLASS_SIMPLE( CMainMenu, vgui::Frame );
+	DECLARE_CLASS_SIMPLE( CMainMenu, Frame );
 
-	CMainMenu( vgui::VPANEL parent );
+	CMainMenu( VPANEL parent );
 	~CMainMenu();
 
-	//void InitializeButton(int x, int y, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer);
-	void InitializeButton( int order, const char* ButtonName, const char* Text, const char* Command, vgui::Button*& ButtonPointer );
+	void InitializeButton( int order, const char* ButtonName, const char* Text, const char* Command, Button*& ButtonPointer );
 
 	virtual void OnThink();
 
-	void IsMouseOver( vgui::Button* button );
+	void IsMouseOver( Button* button );
 
 	bool IsWindowOpen;
 
@@ -54,11 +53,9 @@ private:
 	vgui::Button* m_pResumeButton;
 	vgui::Button* m_pDisconnectButton;
 
+	vgui::ImagePanel* m_pLogoPanel;
+
 	bool IsInGame;
-
-	float ScreenRatio[2];
-
-	vgui::HFont AlteDinDynamic;
 };
 
 
@@ -66,17 +63,7 @@ CMainMenu::CMainMenu( vgui::VPANEL parent ): BaseClass( NULL, "NewMainMenu" )
 {
 	SetParent( parent );
 
-	//LoadControlSettings("resource/ui/NewMainMenu.res");
-
 	IsWindowOpen = false;
-	
-	ScreenRatio[0] = ScreenWidth() / 1920.f;
-	ScreenRatio[1] = ScreenHeight() / 1080.f;
-
-	vgui::surface()->AddCustomFontFile( "AlteDin", "ProjectR/resource/AlteDin1451.ttf" );
-	AlteDinDynamic = vgui::surface()->CreateFont();
-	AlteDinDynamic = vgui::surface()->SetFontGlyphSet(AlteDinDynamic, "AlteDin", 25 * ScreenRatio[1], 0, 0, 5, 0, 0);
-
 
 	SetKeyBoardInputEnabled( true );
 	SetMouseInputEnabled( true );
@@ -93,8 +80,12 @@ CMainMenu::CMainMenu( vgui::VPANEL parent ): BaseClass( NULL, "NewMainMenu" )
 	SetMoveable( false );
 	SetVisible( true );
 
-	SetPos( 460 * ScreenRatio[0], 500 * ScreenRatio[1] );
-	SetSize( 800 * ScreenRatio[0], ScreenHeight() );
+	SetPos( XRES2(100), YRES2(0) );
+	SetSize( ScreenWidth(), ScreenHeight() );
+
+	m_pLogoPanel = SETUP_PANEL( new ImagePanel( this, "LogoPanel" ) );
+	m_pLogoPanel->SetImage( "D:\\Program Files\\Steam\\steamapps\\sourcemods\\ProjectR\\materials\\vgui\\ProjRLogo.vtf" );
+	m_pLogoPanel->SetPos( XRES2(100), YRES2(500) );
 
 	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
 
@@ -127,13 +118,14 @@ void CMainMenu::InitializeButton( int order, const char* ButtonName, const char*
 {
 	ButtonPointer = vgui::SETUP_PANEL( new vgui::Button( this, ButtonName, Text, this, Command ) );
 	ButtonPointer->MakeNewButton( true, vgui::Button::ButtonType::BUTTON_MAINMENU );
-	ButtonPointer->SetSize( 500 * ScreenRatio[0], 45 * ScreenRatio[1] );
-	ButtonPointer->SetTextInset( 30 * ScreenRatio[0], 0 );
+	ButtonPointer->SetSize( XRES2(500), YRES2(45) );
+	ButtonPointer->SetTextInset( XRES2(30), 0 );
 	ButtonPointer->SetFont( AlteDinDynamic );
 	ButtonPointer->SetPaintBorderEnabled( false );
 	ButtonPointer->SetPaintEnabled( true );
-	ButtonPointer->SetPos( 0, (30 + 65 * order) * ScreenRatio[1] );
+	ButtonPointer->SetPos( 0, YRES2((45 + (65 * order) ) + 500) );
 	ButtonPointer->SetButtonActivationType( vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED );
+	ButtonPointer->SetArmedSound( "MainMenu\\ClickSmall.wav" );
 }
 
 void CMainMenu::OnThink()
@@ -158,7 +150,6 @@ void CMainMenu::OnCommand( const char* pcCommand )
 	{
 		//engine->ClientCmd( "gamemenucommand opennewgamedialog" );
 		engine->ClientCmd( "map testmap01" );
-		//delete this;
 	}
 	else if ( !Q_stricmp( pcCommand, "loadsave" ) )
 	{

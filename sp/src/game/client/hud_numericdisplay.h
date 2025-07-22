@@ -36,6 +36,10 @@ public:
 
 	virtual void Reset();
 
+	void SetTextPos( int x, int y );
+	void SetDigitPos( int x, int y );
+	void SetDigit2Pos( int x, int y );
+
 protected:
 	// vgui overrides
 	virtual void Paint();

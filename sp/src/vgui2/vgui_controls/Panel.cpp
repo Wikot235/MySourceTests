@@ -642,6 +642,29 @@ Panel::Panel( Panel *parent, const char *panelName, HScheme scheme )
 //-----------------------------------------------------------------------------
 void Panel::Init( int x, int y, int wide, int tall )
 {
+
+	vgui::surface()->GetScreenSize( resX, resY );
+	ResRatioX = resX / 1920.f;
+	ResRatioY = resY / 1080.f;
+
+	AlteDinDynamic = vgui::surface()->CreateFont();
+	vgui::surface()->AddCustomFontFile( "Alte DIN 1451 Mittelschrift", "ProjectR\\resource\\AlteDin1451.ttf" );
+	vgui::surface()->SetFontGlyphSet( AlteDinDynamic, "Alte DIN 1451 Mittelschrift", 25 * ResRatioY, 0, 0, 0, 0x010, 0 );
+
+	AlteDinHUD = vgui::surface()->CreateFont();
+	vgui::surface()->AddCustomFontFile( "Alte DIN 1451 Mittelschrift", "ProjectR\\resource\\AlteDin1451.ttf" );
+	vgui::surface()->SetFontGlyphSet( AlteDinHUD, "Alte DIN 1451 Mittelschrift", 75 * ResRatioY, 0, 0, 0, 0x010, 0 );
+
+	//This mf is a place holder :)
+	HudFont = vgui::surface()->CreateFont();
+	vgui::surface()->AddCustomFontFile( "HudFont", "ProjectR\\resource\\HudFont.ttf" );
+	vgui::surface()->SetFontGlyphSet( HudFont, "HudFont", 46 * ResRatioY, 0, 0, 0, 0x010, 0 );
+
+	/*
+	vgui::surface()->AddCustomFontFile( "HudFont", "ProjectR/resource/Hud.ttf" );
+	HudFont = vgui::surface()->CreateFont(); 
+	HudFont = vgui::surface()->SetFontGlyphSet( AlteDinDynamic, "HudFont", 50, 0, 0, 0, 0, 0 );
+	*/
 	_panelName = NULL;
 	_tooltipText = NULL;
 	_pinToSibling = NULL;

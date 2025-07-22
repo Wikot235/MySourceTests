@@ -206,11 +206,6 @@ protected:
 	// optimization, return true if this control has any user config settings
 	virtual bool HasUserConfigSettings();
 
-	vgui::HScheme FrameHeaderScheme = vgui::scheme()->LoadSchemeFromFile("resource/SourceScheme.res", "SourceScheme");
-
-	vgui::HFont m_pHFontAlteDin = vgui::scheme()->GetIScheme(FrameHeaderScheme)->GetFont("AlteDin1451");
-	vgui::HFont m_pHFontAlteDinBold = vgui::scheme()->GetIScheme(FrameHeaderScheme)->GetFont("AlteDin1451");
-
 private:
 	MESSAGE_FUNC_CHARPTR( InternalSetTitle, "SetTitle", text );
 	MESSAGE_FUNC( InternalFlashWindow, "FlashWindow" );

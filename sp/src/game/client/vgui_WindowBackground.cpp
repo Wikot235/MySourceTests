@@ -1,10 +1,9 @@
 #include "cbase.h"
 #include "vgui_WindowBackground.h"
-using namespace vgui;
 #include <vgui/IVGui.h>
 #include <vgui_controls/Frame.h>
 
-
+using namespace vgui;
 
 WindowBackground::WindowBackground(vgui::VPANEL parent) : BaseClass(NULL, "WindowBackground")
 {

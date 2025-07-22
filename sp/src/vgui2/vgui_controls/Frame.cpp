@@ -28,14 +28,14 @@
 #include "vgui_controls/MenuButton.h"
 #include "vgui_controls/TextImage.h"
 
+#include <ienginevgui.h>
+
 #include "KeyValues.h"
 
 #include <stdio.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-#include "../../game/client/vgui_WindowBackground.h"
-#include <ienginevgui.h>
 
 using namespace vgui;
 
@@ -1618,26 +1618,23 @@ void Frame::PaintBackground()
 		int wide = GetWide();
 		int tall = surface()->GetFontTall(_title->GetFont());
 
-		int BarTall = 65;
+		int BarTall = 65 * ResRatioY;
 		int WindowTall = GetTall();
 
 		// caption
-		surface()->DrawSetColor(titleColor);
+		surface()->DrawSetColor(Color(32,32,32,255));
 		//int inset = m_bSmallCaption ? 3 : 5;
 		//int captionHeight = m_bSmallCaption ? 14: 28;
 
 		surface()->DrawFilledRect(0, 0, wide, BarTall);
 
-
-		surface()->DrawSetColor(Color(51, 51, 51, 255));
+		surface()->DrawSetColor(Color(60, 60, 60, 255));
 		
 		surface()->DrawOutlinedRect(0, 0, wide, BarTall);
 		surface()->DrawOutlinedRect(1, 1, wide - 1, BarTall - 1);
-		surface()->DrawOutlinedRect(2, 2, wide - 2, BarTall - 2);
 
-		surface()->DrawOutlinedRect(0, BarTall - 3, wide, WindowTall);
-		surface()->DrawOutlinedRect(1, BarTall - 3, wide - 1, WindowTall - 1);
-		surface()->DrawOutlinedRect(2, BarTall - 2, wide - 2, WindowTall - 2);
+		surface()->DrawOutlinedRect(0, BarTall - 2, wide, WindowTall);
+		surface()->DrawOutlinedRect(1, BarTall - 2, wide - 1, WindowTall - 1);
 
 		if (_title)
 		{
@@ -1654,9 +1651,9 @@ void Frame::PaintBackground()
 				nTitleY = m_bSmallCaption ? 2 : 9;
 			}
 			*/
-			_title->SetPos(nTitleX, 19);
+			_title->SetPos(nTitleX * ResRatioX, 19 * ResRatioY);
 			_title->SetSize(nTitleWidth, tall);
-			_title->SetFont(m_pHFontAlteDin);
+			_title->SetFont(AlteDinDynamic);
 			_title->Paint();
 		}
 	}

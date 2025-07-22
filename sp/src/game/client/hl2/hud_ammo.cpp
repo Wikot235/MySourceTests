@@ -38,6 +38,17 @@ public:
 	void SetAmmo2(int ammo2, bool playAnimation);
 	virtual void Paint( void );
 
+	void ProjRHudInit();
+
+	virtual void PaintBackground();
+
+	float posX;
+	float posY;
+	float sizeX;
+	float sizeY;
+
+	Panel* m_pWhiteBar;
+
 protected:
 	virtual void OnThink();
 
@@ -58,7 +69,7 @@ DECLARE_HUDELEMENT( CHudAmmo );
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CHudAmmo::CHudAmmo( const char *pElementName ) : BaseClass(NULL, "HudAmmo"), CHudElement( pElementName )
+CHudAmmo::CHudAmmo( const char *pElementName ) : BaseClass(NULL, "AmmoHud"), CHudElement( pElementName )
 {
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT | HIDEHUD_WEAPONSELECTION );
 
@@ -78,15 +89,7 @@ void CHudAmmo::Init( void )
 	
 	m_iconPrimaryAmmo = NULL;
 
-	wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_AMMO");
-	if (tempString)
-	{
-		SetLabelText(tempString);
-	}
-	else
-	{
-		SetLabelText(L"AMMO");
-	}
+	ProjRHudInit();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,6 +97,13 @@ void CHudAmmo::Init( void )
 //-----------------------------------------------------------------------------
 void CHudAmmo::VidInit( void )
 {
+	ProjRHudInit();
+}
+
+void CHudAmmo::PaintBackground()
+{
+	surface()->DrawSetColor( Color( 0, 0, 0, 255 ) );
+	surface()->DrawFilledRectFade( 0, 0, sizeX, sizeY - YRES2( 5 ), 0, 255, 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -251,6 +261,8 @@ void CHudAmmo::UpdateVehicleAmmo( C_BasePlayer *player, IClientVehicle *pVehicle
 //-----------------------------------------------------------------------------
 void CHudAmmo::OnThink()
 {
+	m_pWhiteBar->SetBgColor( Color( 255, 255, 255, 255 ) );
+
 	UpdateAmmoDisplays();
 }
 
@@ -349,6 +361,38 @@ void CHudAmmo::Paint( void )
 		m_iconPrimaryAmmo->DrawSelf( x, y, GetFgColor() );
 	}
 #endif // HL2MP
+}
+
+void CHudAmmo::ProjRHudInit()
+{
+	posX = ( int )XRES2( 1435 );
+	posY = ( int )YRES2( 952 );
+	sizeX = ( int )XRES2( 308 );
+	sizeY = ( int )YRES2( 94 );
+
+	m_pWhiteBar = new Panel( this, "WhiteBar" );
+	m_pWhiteBar->SetEnabled( 1 );
+	m_pWhiteBar->SetVisible( 1 );
+	//m_pWhiteBar->SetBgColor( GetFgColor() );
+
+	m_pWhiteBar->SetRoundedCorners( 0 );
+	m_pWhiteBar->SetSize( sizeX, YRES2( 5 ) );
+	m_pWhiteBar->SetPos( 0, sizeY - YRES2( 5 ) );
+
+
+	SetProportional( false );
+	SetEnabled( 1 );
+	SetVisible( 1 );
+	SetRoundedCorners( 0 );
+
+	SetPos( posX, posY );
+	SetSize( sizeX, sizeY );
+
+	SetTextPos( XRES2( 29 ), YRES2( 21 ) );
+	SetDigitPos( XRES2( 123 ), YRES2( 7 ) );
+
+	SetLabelText( L"C       /" );
+
 }
 
 //-----------------------------------------------------------------------------

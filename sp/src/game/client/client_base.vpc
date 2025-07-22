@@ -513,6 +513,12 @@ $Project
 		$File	"$SRCDIR\public\haptics\haptic_msgs.cpp"	[!$X360]
 		$File	"$SRCDIR\public\haptics\haptic_utils.cpp"	[$WIN32&&!$X360]
 
+		$File	"$SRCDIR\game\client\vgui_NewMainMenu.cpp"
+		$File	"$SRCDIR\game\client\vgui_WindowBackground.cpp"
+		$File	"$SRCDIR\game\client\vgui_exitwindow.cpp"
+		$File	"$SRCDIR\game\client\OverrideInterface.cpp"
+		$File	"$SRCDIR\game\client\OverrideUI_RootPanel.cpp"
+
 		$Folder	"Sixense"
 		{
 			$File	"sixense\in_sixense.cpp"
@@ -882,6 +888,12 @@ $Project
 		$File	"weapons_resource.h"
 		$File	"vgui_video.h"
 		$File   "vgui_video_player.h"
+
+		$File	"$SRCDIR\game\client\IOverrideInterface.h"
+		$File	"$SRCDIR\game\client\OverrideUI_RootPanel.h"
+		$File	"$SRCDIR\game\client\vgui_NewMainMenu.h"
+		$File	"$SRCDIR\game\client\vgui_WindowBackground.h"
+		$File	"$SRCDIR\game\client\vgui_exitwindow.h"
 	}
 
 	$Folder	"Public Header Files"

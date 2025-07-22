@@ -205,6 +205,9 @@ public:
 	virtual void SetVisible(bool state);
 	virtual bool IsVisible();
 
+	int resX, resY;
+	float ResRatioX, ResRatioY;
+
 	// painting
 	virtual VPANEL IsWithinTraverse(int x, int y, bool traversePopups);	// recursive; returns a pointer to the panel at those coordinates
 	MESSAGE_FUNC( Repaint, "Repaint" );							// marks the panel as needing to be repainted
@@ -587,6 +590,10 @@ public:
 
 	Color GetDropFrameColor();
 	Color GetDragFrameColor();
+
+	vgui::HFont AlteDinDynamic;
+	vgui::HFont AlteDinHUD;
+	vgui::HFont HudFont;
 
 	// Can override to require custom behavior to start the drag state
 	virtual bool	CanStartDragging( int startx, int starty, int mx, int my );

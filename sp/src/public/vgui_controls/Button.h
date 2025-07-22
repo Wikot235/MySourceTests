@@ -68,6 +68,14 @@ public:
 		DoClick();
 	}
 
+	virtual void OnThink();
+
+	float animationStartTime;
+	float duration;
+	int startValue;
+	int endValue;
+	bool m_bIsDuringAnimation;
+
 	// Set button to be mouse clickable or not.
 	virtual void SetMouseClickEnabled( MouseCode code, bool state );
 	// Check if button is mouse clickable

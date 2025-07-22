@@ -150,11 +150,32 @@ void CHudNumericDisplay::PaintNumbers(HFont font, int xpos, int ypos, int value)
 //-----------------------------------------------------------------------------
 void CHudNumericDisplay::PaintLabel( void )
 {
-	surface()->DrawSetTextFont(m_hTextFont);
+	surface()->DrawSetTextFont( HudFont );
 	surface()->DrawSetTextColor(GetFgColor());
 	surface()->DrawSetTextPos(text_xpos, text_ypos);
 	surface()->DrawUnicodeString( m_LabelText );
 }
+
+
+// This stuff will be useful later.
+void CHudNumericDisplay::SetTextPos( int x, int y )
+{
+	text_xpos = x;
+	text_ypos = y;
+}
+
+void CHudNumericDisplay::SetDigitPos( int x, int y )
+{
+	digit_xpos = x;
+	digit_ypos = y;
+}
+
+void CHudNumericDisplay::SetDigit2Pos( int x, int y )
+{
+	digit2_xpos = x;
+	digit2_ypos = y;
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: renders the vgui panel
@@ -165,8 +186,9 @@ void CHudNumericDisplay::Paint()
 	{
 		// draw our numbers
 		surface()->DrawSetTextColor(GetFgColor());
-		PaintNumbers(m_hNumberFont, digit_xpos, digit_ypos, m_iValue);
+		PaintNumbers( AlteDinHUD, digit_xpos, digit_ypos, m_iValue);
 
+		/*
 		// draw the overbright blur
 		for (float fl = m_flBlur; fl > 0.0f; fl -= 1.0f)
 		{
@@ -183,6 +205,7 @@ void CHudNumericDisplay::Paint()
 				PaintNumbers(m_hNumberGlowFont, digit_xpos, digit_ypos, m_iValue);
 			}
 		}
+		*/
 	}
 
 	// total ammo

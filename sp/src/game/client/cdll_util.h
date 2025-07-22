@@ -52,6 +52,9 @@ int		ScreenWidth( void );
 #define XRES(x)	( x  * ( ( float )ScreenWidth() / 640.0 ) )
 #define YRES(y)	( y  * ( ( float )ScreenHeight() / 480.0 ) )
 
+#define XRES2(x)	( x  * ( ( float )ScreenWidth() / 1920.0 ) )
+#define YRES2(y)	( y  * ( ( float )ScreenHeight() / 1080.0 ) )
+
 int		UTIL_ComputeStringWidth( vgui::HFont& font, const char *str );
 int		UTIL_ComputeStringWidth( vgui::HFont& font, const wchar_t *str );
 float	UTIL_AngleDiff( float destAngle, float srcAngle );

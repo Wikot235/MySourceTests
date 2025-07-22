@@ -24,6 +24,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 #include <vgui_controls/AnimationController.h>
+#include "../../game/client/cdll_client_int.h"
 
 using namespace vgui;
 
@@ -63,6 +64,12 @@ Button::Button(Panel *parent, const char *panelName, const wchar_t *wszText, Pan
 //-----------------------------------------------------------------------------
 void Button::Init()
 {
+	animationStartTime = 0.0f;
+	duration = 0.5f;
+	startValue = 0;
+	endValue = 0;
+	m_bIsDuringAnimation = false;
+
 	_buttonFlags.SetFlag( USE_CAPTURE_MOUSE | BUTTON_BORDER_ENABLED );
 
 	_mouseClickMask = 0;
@@ -83,6 +90,11 @@ void Button::Init()
 	SetPaintBackgroundEnabled( true );
 
 	_paint = true;
+	
+	if ( ThisButtonType == BUTTON_NORMALWINDOW )
+	{
+		SetArmedSound( "MainMenu\\ClickSmall.wav" );
+	}
 
 	REGISTER_COLOR_AS_OVERRIDABLE( _defaultFgColor, "defaultFgColor_override" );
 	REGISTER_COLOR_AS_OVERRIDABLE( _defaultBgColor, "defaultBgColor_override" );
@@ -904,6 +916,34 @@ void Button::OnSetState(int state)
 	Repaint();
 }
 
+
+void Button::OnThink()
+{
+	if ( m_bIsNewButton && ThisButtonType == BUTTON_MAINMENU && m_bIsDuringAnimation )
+	{
+		float elapsed = engine->Time() - animationStartTime;
+		float pos = elapsed / duration;
+
+		// Clamp
+		if ( pos >= 1.0f )
+		{
+			pos = 1.0f;
+			m_bIsDuringAnimation = false;
+		}
+
+		int value = Lerp<int>( pos, startValue, endValue );
+		SetBgColor( Color( 0, 0, 0, value ) );
+	}
+
+	if ( m_bIsNewButton && ThisButtonType == BUTTON_NORMALWINDOW )
+	{
+		if( IsArmed() )
+			SetBgColor( Color( 51, 51, 51, 255 ) );
+		else
+			SetBgColor( Color( 32, 32, 32, 255 ) );
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -918,14 +958,15 @@ void Button::OnCursorEntered()
 			switch ( ThisButtonType )
 			{
 				case BUTTON_MAINMENU:
-					//SetBgColor( Color( 0, 0, 0, 0 ) );
-					GetAnimationController()->RunAnimationCommand( this, "xpos", 25, 0.0f, 0.2f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
-					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 125 ), 0.0f, 0.2f, AnimationController::INTERPOLATOR_LINEAR );
-					//GetAnimationController()->RunAnimationCommand( this, "alpha", 125, 0.05f, 0.125f, AnimationController::INTERPOLATOR_LINEAR );
+					duration = 0.1f;
+					startValue = 0;
+					endValue = 125;
+					animationStartTime = engine->Time();
+					m_bIsDuringAnimation = true;
 					break;
 
 				case BUTTON_NORMALWINDOW:
-					//Do nothing
+					
 					break;
 			}
 
@@ -950,14 +991,14 @@ void Button::OnCursorExited()
 			switch ( ThisButtonType )
 			{
 				case BUTTON_MAINMENU:
-					//SetBgColor( Color( 0, 0, 0, 125 ) );
-					GetAnimationController()->RunAnimationCommand( this, "xpos", 0, 0.0f, 0.2f, AnimationController::INTERPOLATOR_SIMPLESPLINE );
-					GetAnimationController()->RunAnimationCommand( this, "BgColor", Color( 0, 0, 0, 0 ), 1.f, 0.35f, AnimationController::INTERPOLATOR_LINEAR );
-					//SetBgColor( Color( 0, 0, 0, 0 ) );
+					duration = 0.3f;
+					startValue = 125;
+					endValue = 0;
+					animationStartTime = engine->Time();
+					m_bIsDuringAnimation = true;
 					break;
 
 				case BUTTON_NORMALWINDOW:
-					//Do nothing
 					break;
 			}
 		}

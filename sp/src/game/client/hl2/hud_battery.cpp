@@ -17,11 +17,14 @@
 #include "hud_numericdisplay.h"
 #include "iclientmode.h"
 
+#include <vgui/ISurface.h>
 #include "vgui_controls/AnimationController.h"
 #include "vgui/ILocalize.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+using namespace vgui;
 
 #define INIT_BAT	-1
 
@@ -39,8 +42,16 @@ public:
 	void VidInit( void );
 	void OnThink( void );
 	void MsgFunc_Battery(bf_read &msg );
+	virtual void PaintBackground();
 	bool ShouldDraw();
 	
+	float posX;
+	float posY;
+	float sizeX;
+	float sizeY;
+
+	Panel* m_pWhiteBar;
+
 private:
 	int		m_iBat;	
 	int		m_iNewBat;
@@ -68,13 +79,45 @@ void CHudBattery::Init( void )
 	m_iNewBat   = 0;
 }
 
+void CHudBattery::PaintBackground()
+{
+	surface()->DrawSetColor( Color( 0, 0, 0, 255 ) );
+	surface()->DrawFilledRectFade( 0, 0, sizeX, sizeY - YRES2( 5 ), 0, 255, 0 );
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CHudBattery::Reset( void )
 {
-	SetLabelText(g_pVGuiLocalize->Find("#Valve_Hud_SUIT"));
-	SetDisplayValue(m_iBat);
+
+	posX = ( int )XRES2( 363 );
+	posY = ( int )YRES2( 950 );
+	sizeX = ( int )XRES2( 233 );
+	sizeY = ( int )YRES2( 96 );
+
+	m_pWhiteBar = new Panel( this, "WhiteBar" );
+	m_pWhiteBar->SetEnabled( 1 );
+	m_pWhiteBar->SetVisible( 1 );
+	//m_pWhiteBar->SetBgColor( GetFgColor() );
+
+	m_pWhiteBar->SetRoundedCorners( 0 );
+	m_pWhiteBar->SetSize( sizeX, YRES2( 5 ) );
+	m_pWhiteBar->SetPos( 0, sizeY - YRES2( 5 ) );
+
+
+	SetProportional( false );
+	SetEnabled( 1 );
+	SetVisible( 1 );
+	SetRoundedCorners( 0 );
+
+	SetPos( posX, posY );
+	SetSize( sizeX, sizeY );
+
+	SetLabelText( L"B" );
+	SetTextPos( XRES2( 29 ), YRES2( 21 ) );
+	SetDigitPos( XRES2( 123 ), YRES2( 7 ) );
+
 }
 
 //-----------------------------------------------------------------------------
@@ -102,6 +145,8 @@ bool CHudBattery::ShouldDraw( void )
 //-----------------------------------------------------------------------------
 void CHudBattery::OnThink( void )
 {
+	m_pWhiteBar->SetBgColor( Color( 255, 255, 255, 255 ) );
+
 	if ( m_iBat == m_iNewBat )
 		return;
 

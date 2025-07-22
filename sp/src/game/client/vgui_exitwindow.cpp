@@ -29,9 +29,13 @@ private:
 ExitWindow::ExitWindow( vgui::VPANEL parent ) : BaseClass(NULL, "ExitWindow")
 {
 	
-	LoadControlSettings("resource/ui/ExitWindow.res");
+	//LoadControlSettings("resource/ui/ExitWindow.res");
+
+	float sizeX = ( int )XRES2( 700 );
+	float sizeY = ( int )YRES2( 400 );
 
 	SetTitle("Q U I T   G A M E", true);
+	SetSize( sizeX, sizeY );
 
 	MakeNewFrame(true, FRAME_POPUPWINDOW);
 	SetKeyBoardInputEnabled(true);
@@ -50,30 +54,33 @@ ExitWindow::ExitWindow( vgui::VPANEL parent ) : BaseClass(NULL, "ExitWindow")
 	//vgui::ivgui()->AddTickSignal(GetVPanel(), 100);
 
 	m_pQuit = vgui::SETUP_PANEL(new vgui::Button(this, "QuitButton", "Yes", this, "quit"));
-	m_pQuit->SetSize(75, 50);
+	m_pQuit->MakeNewButton( true, Button::ButtonType::BUTTON_NORMALWINDOW );
+	m_pQuit->SetSize(XRES2(75), YRES2(50));
 	m_pQuit->SetContentAlignment(vgui::Label::Alignment::a_center);
-	m_pQuit->SetFont(m_pHFontAlteDin);
+	m_pQuit->SetFont( AlteDinDynamic );
 	m_pQuit->SetPaintBorderEnabled(false);
 	m_pQuit->SetPaintEnabled(true);
-	m_pQuit->SetPos(460, 305);
+	m_pQuit->SetPos(sizeX - XRES2(240), sizeY - YRES2(95));
 	m_pQuit->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 	m_pCancel = vgui::SETUP_PANEL(new vgui::Button(this, "CancelButton", "No", this, "cancel"));
-	m_pCancel->SetSize(75, 50);
+	m_pCancel->SetSize(XRES2(75), YRES2(50));
+	m_pCancel->MakeNewButton(true, Button::ButtonType::BUTTON_NORMALWINDOW);
 	m_pCancel->SetContentAlignment(vgui::Label::Alignment::a_center);
-	m_pCancel->SetFont(m_pHFontAlteDin);
+	m_pCancel->SetFont( AlteDinDynamic );
 	m_pCancel->SetPaintBorderEnabled(false);
 	m_pCancel->SetPaintEnabled(true);
-	m_pCancel->SetPos(575, 305);
+	m_pCancel->SetPos(sizeX - XRES2(125), sizeY - YRES2(95));
 	m_pCancel->SetButtonActivationType(vgui::Button::ActivationType_t::ACTIVATE_ONRELEASED);
 
 	m_pLabel = vgui::SETUP_PANEL( new vgui::Label( this, "Label", "Are you sure you wan't to quit Project R?" ) );
-	m_pLabel->SetSize( 600, 150 );
+	m_pLabel->SetSize( sizeX, YRES2(150));
 	m_pLabel->SetContentAlignment( vgui::Label::Alignment::a_northwest );
-	m_pLabel->SetFont( m_pHFontAlteDin );
+	m_pLabel->SetFont( AlteDinDynamic );
 	m_pLabel->SetPaintBorderEnabled( false );
 	m_pLabel->SetPaintEnabled( true );
-	m_pLabel->SetPos( 57, 110 );
+	m_pLabel->SetPos( 0, YRES2(110) );
+	m_pLabel->SetTextInset( XRES2(51), 0 );
 
 
 	MoveToFront();
@@ -99,17 +106,6 @@ void ExitWindow::OnThink()
 
 	if ( m_bIsOepn )
 		MoveToFront();
-
-	if (m_pQuit->IsCursorOver())
-		m_pQuit->SetBgColor(Color(51, 51, 51, 255));
-	else
-		m_pQuit->SetBgColor(Color(32, 32, 32, 255));
-
-	if (m_pCancel->IsCursorOver())
-		m_pCancel->SetBgColor(Color(51, 51, 51, 255));
-	else
-		m_pCancel->SetBgColor(Color(32, 32, 32, 255));
-
 }
 
 void ExitWindow::OnCommand(const char* pcCommand)
