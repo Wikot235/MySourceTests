@@ -84,7 +84,11 @@ void C_PropJeep::Simulate( void )
 			m_pHeadlight->UpdateLight( vVector, vecForward, vecRight, vecUp, JEEP_HEADLIGHT_DISTANCE );
 		}
 	}
+#ifdef MAPBASE
+	else if ( m_pHeadlight && !m_bHeadlightIsOn )
+#else
 	else if ( m_pHeadlight )
+#endif
 	{
 		// Turned off the flashlight; delete it.
 		delete m_pHeadlight;
