@@ -208,6 +208,20 @@ void CPropJeep::Precache( void )
 	BaseClass::Precache();
 }
 
+#ifdef MAPBASE
+void CPropJeep::HeadlightTurnOn( void )
+{
+	EmitSound( "Airboat_headlight_on" );
+	m_bHeadlightIsOn = true;
+}
+
+void CPropJeep::HeadlightTurnOff( void )
+{
+	EmitSound( "Airboat_headlight_off" );
+	m_bHeadlightIsOn = false;
+}
+#endif
+
 //------------------------------------------------
 // Spawn
 //------------------------------------------------
