@@ -53,6 +53,10 @@ private:
 	vgui::Button* m_pResumeButton;
 	vgui::Button* m_pDisconnectButton;
 
+	vgui::Button* m_pLoadGameButton2;
+	vgui::Button* m_pSettingsButton2;
+	vgui::Button* m_pExitButton2;
+
 	vgui::ImagePanel* m_pLogoPanel;
 
 	bool IsInGame;
@@ -84,28 +88,25 @@ CMainMenu::CMainMenu( vgui::VPANEL parent ): BaseClass( NULL, "NewMainMenu" )
 	SetSize( ScreenWidth(), ScreenHeight() );
 
 	m_pLogoPanel = SETUP_PANEL( new ImagePanel( this, "LogoPanel" ) );
-	m_pLogoPanel->SetImage( "D:\\Program Files\\Steam\\steamapps\\sourcemods\\ProjectR\\materials\\vgui\\ProjRLogo.vtf" );
+	m_pLogoPanel->SetImage( "ProjRLogo.vtf" );
 	m_pLogoPanel->SetPos( XRES2(100), YRES2(500) );
 
-	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+	InitializeButton( 1, "BeginMission", "B E G I N   M I S S I O N", "beginmission", m_pBeginMissionButton );
+	InitializeButton( 2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton );
+	InitializeButton( 3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton );
+	InitializeButton( 4, "ExitButton", "Q U I T", "quit", m_pExitButton );
 
-	if ( pPlayer )
-	{
-		InitializeButton( 1, "ResumeGame", "R E S U M E   G A M E", "resumegame", m_pResumeButton );
-		InitializeButton( 2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton );
-		InitializeButton( 3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton );
-		InitializeButton( 4, "DisconnectButton", "B A C K   T O   M A I N   M E N U ", "disconnect", m_pDisconnectButton );
-		InitializeButton( 5, "ExitButton", "Q U I T", "quit", m_pExitButton );
-		IsInGame = true;
-	}
-	else
-	{
-		InitializeButton( 1, "BeginMission", "B E G I N   M I S S I O N", "beginmission", m_pBeginMissionButton );
-		InitializeButton( 2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton );
-		InitializeButton( 3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton );
-		InitializeButton( 4, "ExitButton", "Q U I T", "quit", m_pExitButton );
-		IsInGame = false;
-	}
+	InitializeButton(1, "ResumeGame", "R E S U M E   G A M E", "resumegame", m_pResumeButton);
+	InitializeButton(2, "LoadButton", "L O A D   S A V E", "loadsave", m_pLoadGameButton2);
+	InitializeButton(3, "SettingsButton", "S E T T I N G S", "settings", m_pSettingsButton2);
+	InitializeButton(4, "DisconnectButton", "B A C K   T O   M A I N   M E N U ", "disconnect", m_pDisconnectButton);
+	InitializeButton(5, "ExitButton", "Q U I T", "quit", m_pExitButton2);
+
+	m_pResumeButton->SetEnabled(0);
+	m_pLoadGameButton->SetEnabled(0);
+	m_pSettingsButton->SetEnabled(0);
+	m_pDisconnectButton->SetEnabled(0);
+	m_pExitButton->SetEnabled(0);
 }
 
 CMainMenu::~CMainMenu()
@@ -130,6 +131,53 @@ void CMainMenu::InitializeButton( int order, const char* ButtonName, const char*
 
 void CMainMenu::OnThink()
 {
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+
+	if (pPlayer)
+	{
+		m_pBeginMissionButton->SetEnabled(0);
+		m_pLoadGameButton->SetEnabled(0);
+		m_pSettingsButton->SetEnabled(0);
+		m_pExitButton->SetEnabled(0);
+		m_pBeginMissionButton->SetVisible(0);
+		m_pLoadGameButton->SetVisible(0);
+		m_pSettingsButton->SetVisible(0);
+		m_pExitButton->SetVisible(0);
+
+		m_pResumeButton->SetEnabled(1);
+		m_pLoadGameButton2->SetEnabled(1);
+		m_pSettingsButton2->SetEnabled(1);
+		m_pDisconnectButton->SetEnabled(1);
+		m_pExitButton2->SetEnabled(1);
+		m_pResumeButton->SetVisible(1);
+		m_pLoadGameButton2->SetVisible(1);
+		m_pSettingsButton2->SetVisible(1);
+		m_pDisconnectButton->SetVisible(1);
+		m_pExitButton2->SetVisible(1);
+	}
+	else
+	{
+		m_pResumeButton->SetEnabled(0);
+		m_pLoadGameButton2->SetEnabled(0);
+		m_pSettingsButton2->SetEnabled(0);
+		m_pDisconnectButton->SetEnabled(0);
+		m_pExitButton2->SetEnabled(0);
+		m_pResumeButton->SetVisible(0);
+		m_pLoadGameButton2->SetVisible(0);
+		m_pSettingsButton2->SetVisible(0);
+		m_pDisconnectButton->SetVisible(0);
+		m_pExitButton2->SetVisible(0);
+
+		m_pBeginMissionButton->SetEnabled(1);
+		m_pLoadGameButton->SetEnabled(1);
+		m_pSettingsButton->SetEnabled(1);
+		m_pExitButton->SetEnabled(1);
+		m_pBeginMissionButton->SetVisible(1);
+		m_pLoadGameButton->SetVisible(1);
+		m_pSettingsButton->SetVisible(1);
+		m_pExitButton->SetVisible(1);
+	}
+
 	BaseClass::OnThink();
 }
 
