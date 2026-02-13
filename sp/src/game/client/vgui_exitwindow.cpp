@@ -7,25 +7,6 @@ using namespace vgui;
 #include "vgui_controls/Label.h"
 #include <vgui_WindowBackground.h>
 
-class ExitWindow : public Frame
-{
-	DECLARE_CLASS_SIMPLE(ExitWindow, Frame);
-
-	ExitWindow(vgui::VPANEL parent);
-	~ExitWindow();
-	
-protected:
-	virtual void OnThink();
-	virtual void OnCommand(const char* pcCommand);
-	virtual void PaintBackground();
-
-private:
-	vgui::Button* m_pQuit;
-	vgui::Button* m_pCancel;
-
-	vgui::Label* m_pLabel;
-};
-
 ExitWindow::ExitWindow( vgui::VPANEL parent ) : BaseClass(NULL, "ExitWindow")
 {
 	
@@ -80,8 +61,7 @@ ExitWindow::ExitWindow( vgui::VPANEL parent ) : BaseClass(NULL, "ExitWindow")
 	m_pLabel->SetPaintBorderEnabled( false );
 	m_pLabel->SetPaintEnabled( true );
 	m_pLabel->SetPos( 0, YRES2(110) );
-	m_pLabel->SetTextInset( XRES2(51), 0 );
-
+	m_pLabel->SetTextInset( XRES2(50), 0 );
 
 	MoveToFront();
 }
@@ -123,29 +103,3 @@ void ExitWindow::OnCommand(const char* pcCommand)
 		backgroundwindow->Destroy();
 	}
 }
-
-
-class CExitWindowInterface : public IExitWindow
-{
-private:
-	ExitWindow* ExitWindow_;
-public:
-	CExitWindowInterface()
-	{
-		ExitWindow_ = NULL;
-	}
-	void Create(vgui::VPANEL parent)
-	{
-		ExitWindow_ = new ExitWindow(parent);
-	}
-	void Destroy()
-	{
-		if (ExitWindow_)
-		{
-			ExitWindow_->SetParent((vgui::Panel*)NULL);
-			delete ExitWindow_;
-		}
-	}
-};
-static CExitWindowInterface g_exitwindow;
-IExitWindow* exitwindow = (IExitWindow*)&g_exitwindow;

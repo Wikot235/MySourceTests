@@ -21,6 +21,9 @@
 #include <vgui_controls/Button.h>
 #include <vgui_controls/FocusNavGroup.h>
 
+#include <vgui_controls/AnimationController.h>
+#include "../../game/client/cdll_client_int.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 #include <vgui_controls/AnimationController.h>
@@ -153,7 +156,7 @@ void Button::SetSelected( bool state )
 	if ( _buttonFlags.IsFlagSet( SELECTED ) != state )
 	{
 		_buttonFlags.SetFlag( SELECTED, state );
-		RecalculateDepressedState();
+		//RecalculateDepressedState();
 		InvalidateLayout(false);
 	}
 

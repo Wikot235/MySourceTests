@@ -1147,25 +1147,25 @@ void Frame::OnFrameFocusChanged(bool bHasFocus)
 	// set our background color
 	if (bHasFocus)
 	{
-		if (m_flFocusTransitionEffectTime && ( !m_bDisableFadeEffect ))
+		/*if (m_flFocusTransitionEffectTime && (!m_bDisableFadeEffect))
 		{
 			GetAnimationController()->RunAnimationCommand(this, "BgColor", m_InFocusBgColor, 0.0f, m_bDisableFadeEffect ? 0.0f : m_flTransitionEffectTime, AnimationController::INTERPOLATOR_LINEAR);
 		}
 		else
-		{
-			SetBgColor(m_InFocusBgColor);
-		}
+		{*/
+		SetBgColor(m_InFocusBgColor);
+		//}
 	}
 	else
 	{
-		if (m_flFocusTransitionEffectTime && ( !m_bDisableFadeEffect ))
+		/*if (m_flFocusTransitionEffectTime && (!m_bDisableFadeEffect))
 		{
 			GetAnimationController()->RunAnimationCommand(this, "BgColor", m_OutOfFocusBgColor, 0.0f, m_bDisableFadeEffect ? 0.0f : m_flTransitionEffectTime, AnimationController::INTERPOLATOR_LINEAR);
 		}
 		else
-		{
-			SetBgColor(m_OutOfFocusBgColor);
-		}
+		{*/
+		SetBgColor(m_OutOfFocusBgColor);
+		//}
 	}
 
 	// Stop flashing when we get focus
@@ -2035,6 +2035,8 @@ void Frame::FinishClose()
 	SetVisible(false);
 	m_bPreviouslyVisible = false;
 	m_bFadingOut = false;
+	m_bIsAnimating = false;
+
 
 	OnFinishedClose();
 	

@@ -391,7 +391,8 @@ void CHudAmmo::ProjRHudInit()
 	SetTextPos( XRES2( 29 ), YRES2( 21 ) );
 	SetDigitPos( XRES2( 123 ), YRES2( 7 ) );
 
-	SetLabelText( L"C       /" );
+	surface()->DrawSetTextFont(AlteDinHUD);
+	SetLabelText( L"C           /" );
 
 }
 

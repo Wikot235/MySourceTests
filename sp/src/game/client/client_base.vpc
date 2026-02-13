@@ -519,6 +519,10 @@ $Project
 		$File	"$SRCDIR\game\client\OverrideInterface.cpp"
 		$File	"$SRCDIR\game\client\OverrideUI_RootPanel.cpp"
 
+		$File	"$SRCDIR\game\client\vgui_settingswindow.cpp"
+
+		$File	"$SRCDIR\game\client\vgui_controlswindow.cpp"
+
 		$Folder	"Sixense"
 		{
 			$File	"sixense\in_sixense.cpp"
@@ -894,6 +898,11 @@ $Project
 		$File	"$SRCDIR\game\client\vgui_NewMainMenu.h"
 		$File	"$SRCDIR\game\client\vgui_WindowBackground.h"
 		$File	"$SRCDIR\game\client\vgui_exitwindow.h"
+
+		$File	"$SRCDIR\game\client\vgui_settingswindow.h"
+		
+		$File	"$SRCDIR\game\client\vgui_controlswindow.h"
+
 	}
 
 	$Folder	"Public Header Files"

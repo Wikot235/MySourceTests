@@ -100,15 +100,15 @@ void CHudHealth::Reset()
 	sizeX = ( int )XRES2( 233 );
 	sizeY = ( int )YRES2( 96 );
 
-	m_pWhiteBar = new Panel( this, "WhiteBar" );
+	m_pWhiteBar = new Panel( this, "WhiteBarHealth" );
 	m_pWhiteBar->SetEnabled(1);
 	m_pWhiteBar->SetVisible(1);
-	//m_pWhiteBar->SetBgColor( GetFgColor() );
 
 	m_pWhiteBar->SetRoundedCorners(0);
 	m_pWhiteBar->SetSize( sizeX, YRES2(5) );
 	m_pWhiteBar->SetPos( 0, sizeY - YRES2( 5 ) );
 
+	m_pWhiteBar->SetBgColor(Color(255, 255, 255, 255));
 
 	SetProportional( false );
 	SetEnabled( 1 );
@@ -118,6 +118,9 @@ void CHudHealth::Reset()
 	SetPos( posX, posY );
 	SetSize( sizeX, sizeY );
 
+
+	SetBgColor(Color(0, 0, 0, 255));
+
 	SetLabelText(L"A");
 	SetTextPos( XRES2(29), YRES2(21) );
 	SetDigitPos( XRES2(123), YRES2(7) );
@@ -126,12 +129,7 @@ void CHudHealth::Reset()
 
 void CHudHealth::PaintBackground()
 {
-	/*
-	surface()->DrawSetColor( Color(255,255,255,255) );
-	surface()->DrawFilledRect( 0, sizeY - YRES2( 5 ), sizeX, sizeY );
-	*/
-	//surface()->DrawSetColor( GetBgColor() );
-	surface()->DrawSetColor( Color(0,0,0,255) );
+	surface()->DrawSetColor( GetBgColor() );
 	surface()->DrawFilledRectFade( 0, 0, sizeX, sizeY - YRES2( 5 ), 0, 255, 0 );
 }
 
@@ -148,7 +146,6 @@ void CHudHealth::VidInit()
 //-----------------------------------------------------------------------------
 void CHudHealth::OnThink()
 {
-	m_pWhiteBar->SetBgColor( Color( 255, 255, 255, 255 ) );
 
 	int newHealth = 0;
 	C_BasePlayer *local = C_BasePlayer::GetLocalPlayer();

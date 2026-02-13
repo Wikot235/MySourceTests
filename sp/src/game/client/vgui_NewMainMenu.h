@@ -1,3 +1,9 @@
+#if !defined( VGUI_NEWMAINMENU_H )
+#define VGUI_NEWMAINMENU_H
+#ifdef _WIN32
+#pragma once
+#endif
+
 class IMainMenu
 {
 public:
@@ -6,3 +12,5 @@ public:
 };
 
 extern IMainMenu* mainmenu;
+
+#endif

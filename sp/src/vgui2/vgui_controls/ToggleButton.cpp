@@ -23,7 +23,13 @@ DECLARE_BUILD_FACTORY_DEFAULT_TEXT( ToggleButton, ToggleButton );
 //-----------------------------------------------------------------------------
 ToggleButton::ToggleButton(Panel *parent, const char *panelName, const char* text) : Button(parent, panelName, text)
 {
+	YesNoOnly = true;
 	SetButtonActivationType(ACTIVATE_ONPRESSED);
+}
+
+void ToggleButton::SetYesNoOnly(bool state)
+{
+	YesNoOnly = state;
 }
 
 //-----------------------------------------------------------------------------
@@ -65,11 +71,17 @@ void ToggleButton::DoClick()
 {
 	if (IsSelected())
 	{
-		ForceDepressed(false);
+		if (!YesNoOnly)
+			ForceDepressed(false);
+		else
+			SetText("Yes");
 	}
 	else if (!IsSelected())
 	{
-		ForceDepressed(true);
+		if (!YesNoOnly)
+			ForceDepressed(true);
+		else
+			SetText("No");
 	}
 
 	SetSelected(!IsSelected());
@@ -81,6 +93,14 @@ void ToggleButton::DoClick()
 	PostActionSignal(msg);
 	
 	Repaint();
+}
+
+void ToggleButton::OnThink()
+{
+	if (IsCursorOver())
+		SetBgColor(Color(51, 51, 51, 255));
+	else
+		SetBgColor(Color(32, 32, 32, 255));
 }
 
 //-----------------------------------------------------------------------------

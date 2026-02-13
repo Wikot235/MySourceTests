@@ -4124,6 +4124,9 @@ void CGameMovement::FinishUnDuck( void )
 	player->RemoveFlag( FL_DUCKING );
 	player->m_Local.m_bDucking  = false;
 	player->m_Local.m_bInDuckJump  = false;
+#ifdef MAPBASE
+	player->m_Local.m_bIsUnducking = false;
+#endif
 	player->SetViewOffset( GetPlayerViewOffset( false ) );
 	player->m_Local.m_flDucktime = 0;
 
@@ -4373,6 +4376,13 @@ void CGameMovement::Duck( void )
 	if ( IsDead() )
 		return;
 
+#ifdef MAPBASE
+	if (player->m_Local.m_bIsUnducking == true)
+	{
+		mv->m_nButtons &= ~IN_DUCK;
+	}
+#endif
+
 	// Slow down ducked players.
 	HandleDuckingSpeedCrop();
 
@@ -4502,6 +4512,9 @@ void CGameMovement::Duck( void )
 					// or unducking
 					if ( ( player->m_Local.m_bDucking || player->m_Local.m_bDucked ) )
 					{
+#ifdef MAPBASE
+						player->m_Local.m_bIsUnducking = true;
+#endif
 						float flDuckMilliseconds = MAX( 0.0f, GAMEMOVEMENT_DUCK_TIME - (float)player->m_Local.m_flDucktime );
 						float flDuckSeconds = flDuckMilliseconds * 0.001f;
 						

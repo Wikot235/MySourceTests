@@ -56,6 +56,9 @@ public:
 	// During ducking process, amount of time before full duc
 	CNetworkVar( float, m_flDucktime );
 	CNetworkVar( float, m_flDuckJumpTime );
+#ifdef MAPBASE
+	CNetworkVar( bool, m_bIsUnducking );		// Is the player currently unducking?
+#endif
 	// Jump time, time to auto unduck (since we auto crouch jump now).
 	CNetworkVar( float, m_flJumpTime );
 	// Step sound side flip/flip

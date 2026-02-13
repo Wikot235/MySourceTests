@@ -150,6 +150,9 @@ public:
 	void SetFadeEffectDisableOverride( bool disabled );
 
 protected:
+
+	bool m_bIsAnimating;
+
 	// Respond to mouse presses
 	virtual void OnMousePressed(MouseCode code);
 	// Respond to Key typing

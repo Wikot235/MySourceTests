@@ -5288,6 +5288,9 @@ void CBasePlayer::Spawn( void )
 	m_Local.m_bDucked = false;// This will persist over round restart if you hold duck otherwise. 
 	m_Local.m_bDucking = false;
     SetViewOffset( VEC_VIEW_SCALED( this ) );
+#ifdef MAPBASE
+	m_Local.m_bIsUnducking = false;
+#endif
 	Precache();
 	
 	m_bitsDamageType = 0;

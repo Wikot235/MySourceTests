@@ -34,6 +34,7 @@ public:
 		"ButtonToggled"
 			int "state"
 	*/
+	void SetYesNoOnly(bool state);
 
 protected:
 	// overrides
@@ -45,7 +46,10 @@ protected:
     virtual bool CanBeDefaultButton(void);
     virtual void OnKeyCodePressed(KeyCode code);
 
+	virtual void OnThink();
+
 private:
+	bool YesNoOnly;
 	Color _selectedColor;
 };
 

@@ -48,6 +48,9 @@ public:
 	bool					m_bInDuckJump;
 	float					m_flDucktime;
 	float					m_flDuckJumpTime;
+#ifdef MAPBASE
+	bool					m_bIsUnducking;		// Is the player currently unducking?
+#endif
 	float					m_flJumpTime;
 	int						m_nStepside;
 	float					m_flFallVelocity;

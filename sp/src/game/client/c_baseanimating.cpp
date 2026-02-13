@@ -3600,15 +3600,20 @@ void C_BaseAnimating::ProcessMuzzleFlashEvent()
 			GetAttachment( 1, vAttachment, dummyAngles );
 
 			// Make an elight
-			dlight_t *el = effects->CL_AllocElight( LIGHT_INDEX_MUZZLEFLASH + index );
-			el->origin = vAttachment;
-			el->radius = random->RandomInt( 32, 64 ); 
-			el->decay = el->radius / 0.05f;
-			el->die = gpGlobals->curtime + 0.05f;
-			el->color.r = 255;
-			el->color.g = 192;
-			el->color.b = 64;
-			el->color.exponent = 5;
+			dlight_t *dl = effects->CL_AllocDlight( LIGHT_INDEX_MUZZLEFLASH + index );
+			dl->origin = vAttachment;
+			
+			/*if (!strcmp(GetActiveWeapon()->GetClassname(), "weapon_shotgun"))
+			{
+				dl->radius = random->RandomInt(999, 999);
+			}*/
+			dl->radius = random->RandomInt(96, 128);
+			dl->decay = dl->radius / 0.25f;
+			dl->die = gpGlobals->curtime + 0.05f;
+			dl->color.r = 255;
+			dl->color.g = 182 + random->RandomInt(0, 30);
+			dl->color.b = 34 + random->RandomInt(0, 14);
+			dl->color.exponent = 5;
 		}
 	}
 }

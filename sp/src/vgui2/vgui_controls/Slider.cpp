@@ -386,9 +386,9 @@ void Slider::GetTrackRect( int& x, int& y, int& w, int& h )
 	GetPaintSize( wide, tall );
 
 	x = 0;
-	y = 8;
+	y = 0;
 	w = wide - (int)_nobSize;
-	h = 4;
+	h = 10;
 }
 
 //-----------------------------------------------------------------------------
@@ -396,7 +396,7 @@ void Slider::GetTrackRect( int& x, int& y, int& w, int& h )
 //-----------------------------------------------------------------------------
 void Slider::Paint()
 {
-	DrawTicks();
+	//DrawTicks();
 
 	DrawTickLabels();
 
@@ -515,23 +515,22 @@ void Slider::DrawNob()
 	int x, y;
 	int wide,tall;
 	GetTrackRect( x, y, wide, tall );
-	Color col = GetFgColor();
 #ifdef _X360
 	if(HasFocus())
 	{
 		col = m_DepressedBgColor;
 	}
 #endif
-	surface()->DrawSetColor(col);
 
-	int nobheight = 16;
+	int nobheight = 20;
 
-	surface()->DrawFilledRect(
-		_nobPos[0], 
-		y + tall / 2 - nobheight / 2, 
-		_nobPos[1], 
-		y + tall / 2 + nobheight / 2);
+	//surface()->DrawSetColor(Color(60, 60, 60, 255));
+	//surface()->DrawFilledRect( 0, y + tall / 2 - nobheight / 2, _nobPos[0], y + tall / 2 + nobheight / 2 );
+
+	surface()->DrawSetColor(Color(75, 75, 75, 255));
+	surface()->DrawFilledRect( _nobPos[0], y + tall / 2 - nobheight, _nobPos[1], y + tall / 2 + nobheight );
 	// border
+/*
 	if (_sliderBorder)
 	{
 		_sliderBorder->Paint(
@@ -540,6 +539,7 @@ void Slider::DrawNob()
 			_nobPos[1], 
 			y + tall / 2 + nobheight / 2);
 	}
+*/
 }
 
 //-----------------------------------------------------------------------------
@@ -614,12 +614,13 @@ void Slider::PaintBackground()
 
 	GetTrackRect( x, y, wide, tall );
 
-	surface()->DrawSetColor( m_TrackColor ); 
+	surface()->DrawSetColor( Color(32,32,32,255) ); 
 	surface()->DrawFilledRect( x, y, x + wide, y + tall );
+	/*
 	if (_insetBorder)
 	{
 		_insetBorder->Paint( x, y, x + wide, y + tall );
-	}
+	}*/
 }
 
 //-----------------------------------------------------------------------------

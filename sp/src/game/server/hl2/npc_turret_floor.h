@@ -45,6 +45,7 @@ enum eyeState_t
 #define SF_FLOOR_TURRET_CITIZEN				0x00000200	// Citizen modified turret
 #ifdef MAPBASE
 #define SF_FLOOR_TURRET_NO_SPRITE			0x00000400
+#define SF_FLOOR_TURRET_DIE_PERMANENTLY		0x00000800
 #endif
 
 class CTurretTipController;
@@ -214,6 +215,10 @@ protected:
 	void	DryFire( void );
 	void	UpdateMuzzleMatrix();
 
+#ifdef MAPBASE
+	void InputChangeAmmoCount( inputdata_t& inputdata );
+#endif
+
 protected:
 	matrix3x4_t m_muzzleToWorld;
 	int		m_muzzleToWorldTick;
@@ -237,6 +242,9 @@ protected:
 	float	m_flPlayerDropTime;
 #ifndef MAPBASE // Replaced with m_nSkin.
 	int		m_iKeySkin;
+#endif
+#ifdef MAPBASE
+	int		m_iAmmoCount;
 #endif
 
 	CHandle<CBaseCombatCharacter> m_hLastNPCToKickMe;		// Stores the last NPC who tried to knock me over

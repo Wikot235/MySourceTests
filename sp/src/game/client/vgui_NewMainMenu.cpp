@@ -3,6 +3,7 @@
 #include "vgui_NewMainMenu.h"
 #include "vgui_exitwindow.h"
 #include "vgui_WindowBackground.h"
+#include <vgui_settingswindow.h>
 
 #include "vgui_controls/AnimationController.h"
 
@@ -43,7 +44,6 @@ protected:
 	virtual void PaintBackground();
 
 private:
-	VPANEL GameUIPanel = enginevgui->GetPanel( PANEL_GAMEUIDLL );
 
 	vgui::Button* m_pBeginMissionButton;
 	vgui::Button* m_pLoadGameButton;
@@ -87,8 +87,9 @@ CMainMenu::CMainMenu( vgui::VPANEL parent ): BaseClass( NULL, "NewMainMenu" )
 	SetPos( XRES2(100), YRES2(0) );
 	SetSize( ScreenWidth(), ScreenHeight() );
 
-	m_pLogoPanel = SETUP_PANEL( new ImagePanel( this, "LogoPanel" ) );
-	m_pLogoPanel->SetImage( "ProjRLogo.vtf" );
+	m_pLogoPanel = new ImagePanel( this, "LogoPanel" );
+	m_pLogoPanel->SetTileImage(true);
+	m_pLogoPanel->SetImage( "vgui\\ProjRLogo" );
 	m_pLogoPanel->SetPos( XRES2(100), YRES2(500) );
 
 	InitializeButton( 1, "BeginMission", "B E G I N   M I S S I O N", "beginmission", m_pBeginMissionButton );
@@ -194,6 +195,7 @@ void CMainMenu::IsMouseOver( vgui::Button* button )
 
 void CMainMenu::OnCommand( const char* pcCommand )
 {
+	VPANEL GameUIPanel = enginevgui->GetPanel(PANEL_GAMEUIDLL);
 	if ( !Q_stricmp( pcCommand, "beginmission" ) )
 	{
 		//engine->ClientCmd( "gamemenucommand opennewgamedialog" );
@@ -205,7 +207,8 @@ void CMainMenu::OnCommand( const char* pcCommand )
 	}
 	else if ( !Q_stricmp( pcCommand, "settings" ) )
 	{
-		engine->ClientCmd( "gamemenucommand openoptionsdialog" );
+		backgroundwindow->Create(GameUIPanel);
+		SettingsWindow* settingswindow = new SettingsWindow(GameUIPanel);
 	}
 	else if ( !Q_stricmp( pcCommand, "disconnect" ) )
 	{
@@ -218,7 +221,7 @@ void CMainMenu::OnCommand( const char* pcCommand )
 	else if ( !Q_stricmp( pcCommand, "quit" ) )
 	{
 		backgroundwindow->Create( GameUIPanel );
-		exitwindow->Create( GameUIPanel );
+		ExitWindow* exitwindow = new ExitWindow(GameUIPanel);
 	}
 
 	BaseClass::OnCommand( pcCommand );
