@@ -38,6 +38,10 @@ const char *GetMassEquivalent(float flMass);
 //Debug visualization
 ConVar	g_debug_turret( "g_debug_turret", "0" );
 
+#ifdef MAPBASE
+ConVar sk_turret_dmg( "sk_turret_dmg", "0" );
+#endif
+
 extern ConVar physcannon_tracelength;
 
 #if defined(MAPBASE) && defined(HL2_EPISODIC)
@@ -85,6 +89,9 @@ int ACT_FLOOR_TURRET_FIRE;
 BEGIN_DATADESC( CNPC_FloorTurret )
 
 	DEFINE_FIELD( m_iAmmoType,	FIELD_INTEGER ),
+#ifdef MAPBASE
+	DEFINE_KEYFIELD( m_iAmmoCount, FIELD_INTEGER, "ammocount"),
+#endif
 	DEFINE_FIELD( m_bAutoStart,	FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bActive,		FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bBlinkState,	FIELD_BOOLEAN ),
@@ -144,6 +151,7 @@ BEGIN_DATADESC( CNPC_FloorTurret )
 #ifdef MAPBASE
 	DEFINE_INPUTFUNC( FIELD_VOID, "CreateSprite", InputCreateSprite ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "DestroySprite", InputDestroySprite ),
+	DEFINE_INPUTFUNC( FIELD_INTEGER, "ChangeAmmoCount", InputChangeAmmoCount ),
 #endif
 	DEFINE_INPUTFUNC( FIELD_VOID, "SelfDestruct", InputSelfDestruct ),
 
@@ -189,6 +197,10 @@ CNPC_FloorTurret::CNPC_FloorTurret( void ) :
 	m_vecGoalAngles.Init();
 
 	m_vecEnemyLKP = vec3_invalid;
+
+#ifdef MAPBASE
+	KeyValue("ammocount", "-1");
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1152,34 +1164,52 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 {
 	FireBulletsInfo_t info;
 
-	if ( !bStrict && GetEnemy() != NULL )
+	if ( m_iAmmoCount > 0 || m_iAmmoCount == -1 )
 	{
-		Vector vecDir = GetActualShootTrajectory( vecSrc );
 
-		info.m_vecSrc = vecSrc;
-		info.m_vecDirShooting = vecDir;
-		info.m_iTracerFreq = 1;
-		info.m_iShots = 1;
-		info.m_pAttacker = this;
-		info.m_vecSpread = VECTOR_CONE_PRECALCULATED;
-		info.m_flDistance = MAX_COORD_RANGE;
-		info.m_iAmmoType = m_iAmmoType;
-	}
-	else
-	{
-		info.m_vecSrc = vecSrc;
-		info.m_vecDirShooting = vecDirToEnemy;
-		info.m_iTracerFreq = 1;
-		info.m_iShots = 1;
-		info.m_pAttacker = this;
-		info.m_vecSpread = GetAttackSpread( NULL, GetEnemy() );
-		info.m_flDistance = MAX_COORD_RANGE;
-		info.m_iAmmoType = m_iAmmoType;
-	}
+		if ( !bStrict && GetEnemy() != NULL )
+		{
+			Vector vecDir = GetActualShootTrajectory( vecSrc );
 
-	FireBullets( info );
-	EmitSound( "NPC_FloorTurret.ShotSounds", m_ShotSounds );
-	DoMuzzleFlash();
+			info.m_vecSrc = vecSrc;
+			info.m_vecDirShooting = vecDir;
+			info.m_iTracerFreq = 1;
+#ifdef MAPBASE
+			info.m_flDamage = sk_turret_dmg.GetFloat();
+#endif
+			info.m_iShots = 1;
+			info.m_pAttacker = this;
+			info.m_vecSpread = VECTOR_CONE_PRECALCULATED;
+			info.m_flDistance = MAX_COORD_RANGE;
+			info.m_iAmmoType = m_iAmmoType;
+		}
+		else
+		{
+			info.m_vecSrc = vecSrc;
+			info.m_vecDirShooting = vecDirToEnemy;
+			info.m_iTracerFreq = 1;
+#ifdef MAPBASE
+			info.m_flDamage = sk_turret_dmg.GetFloat();
+#endif
+			info.m_iShots = 1;
+			info.m_pAttacker = this;
+			info.m_vecSpread = GetAttackSpread( NULL, GetEnemy() );
+			info.m_flDistance = MAX_COORD_RANGE;
+			info.m_iAmmoType = m_iAmmoType;
+		}
+
+		FireBullets( info );
+		EmitSound( "NPC_FloorTurret.ShotSounds", m_ShotSounds );
+		DoMuzzleFlash();
+
+#ifdef MAPBASE
+		if( m_iAmmoCount > 0 )
+			m_iAmmoCount--;
+
+		if ( m_iAmmoCount == 0 && !HasSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO ) )
+			AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+#endif
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1791,6 +1821,9 @@ void CNPC_FloorTurret::InputDisable( inputdata_t &inputdata )
 void CNPC_FloorTurret::InputDepleteAmmo( inputdata_t &inputdata )
 {
 	AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+#ifdef MAPBASE
+	m_iAmmoCount = 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1799,9 +1832,25 @@ void CNPC_FloorTurret::InputDepleteAmmo( inputdata_t &inputdata )
 void CNPC_FloorTurret::InputRestoreAmmo( inputdata_t &inputdata )
 {
 	RemoveSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+#ifdef MAPBASE
+	m_iAmmoCount = -1;
+#endif
 }
 
 #ifdef MAPBASE
+void CNPC_FloorTurret::InputChangeAmmoCount( inputdata_t &inputdata )
+{	
+	if ( inputdata.value.Int() > 0 || inputdata.value.Int() == -1 )
+	{
+		if ( HasSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO ) )		
+			RemoveSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+	}
+	else if ( inputdata.value.Int() == 0 )
+		AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+
+	m_iAmmoCount = inputdata.value.Int();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Creates the sprite if it has been destroyed
 //-----------------------------------------------------------------------------
