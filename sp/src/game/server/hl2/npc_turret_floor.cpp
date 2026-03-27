@@ -39,7 +39,8 @@ const char *GetMassEquivalent(float flMass);
 ConVar	g_debug_turret( "g_debug_turret", "0" );
 
 #ifdef MAPBASE
-ConVar sk_turret_dmg( "sk_turret_dmg", "0" );
+ConVar sk_floor_turret_dmg( "sk_turret_dmg", "0" );
+ConVar sk_floor_turret_health( "sk_turret_health", "100" );
 #endif
 
 extern ConVar physcannon_tracelength;
@@ -91,6 +92,9 @@ BEGIN_DATADESC( CNPC_FloorTurret )
 	DEFINE_FIELD( m_iAmmoType,	FIELD_INTEGER ),
 #ifdef MAPBASE
 	DEFINE_KEYFIELD( m_iAmmoCount, FIELD_INTEGER, "ammocount"),
+	DEFINE_KEYFIELD( m_bKillable, FIELD_BOOLEAN, "killable"),
+	DEFINE_KEYFIELD( m_bImmovable, FIELD_BOOLEAN, "immovable"),
+	DEFINE_KEYFIELD( m_bBehaviorOnFall, FIELD_INTEGER, "behavioronfall"),
 #endif
 	DEFINE_FIELD( m_bAutoStart,	FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bActive,		FIELD_BOOLEAN ),
@@ -200,6 +204,9 @@ CNPC_FloorTurret::CNPC_FloorTurret( void ) :
 
 #ifdef MAPBASE
 	KeyValue("ammocount", "-1");
+	KeyValue("killable", "0");
+	KeyValue("immovable", "0");
+	KeyValue("behavioronfall", "0");
 #endif
 }
 
@@ -331,8 +338,22 @@ void CNPC_FloorTurret::Spawn( void )
 	m_HackedGunPos	= Vector( 0, 0, 12.75 );
 	SetViewOffset( EyeOffset( ACT_IDLE ) );
 	m_flFieldOfView	= 0.4f; // 60 degrees
+#ifdef MAPBASE
+	if ( m_bKillable )
+		m_takedamage = DAMAGE_YES;
+	else
+		m_takedamage = DAMAGE_EVENTS_ONLY;
+
+	if ( m_bImmovable )
+	{
+		SetSolid( SOLID_VPHYSICS );
+	}
+
+	m_iHealth = sk_floor_turret_health.GetInt();
+#else
 	m_takedamage	= DAMAGE_EVENTS_ONLY;
 	m_iHealth		= 100;
+#endif
 	m_iMaxHealth	= 100;
 
 	AddEFlags( EFL_NO_DISSOLVE );
@@ -379,7 +400,12 @@ void CNPC_FloorTurret::Spawn( void )
 	// Don't allow us to skip animation setup because our attachments are critical to us!
 	SetBoneCacheFlags( BCF_NO_ANIMATION_SKIP );
 
+#ifdef MAPBASE
+	if ( !m_bImmovable )
+		CreateVPhysics();
+#else
 	CreateVPhysics();
+#endif
 
 	SetState(NPC_STATE_IDLE);
 }
@@ -1175,7 +1201,7 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 			info.m_vecDirShooting = vecDir;
 			info.m_iTracerFreq = 1;
 #ifdef MAPBASE
-			info.m_flDamage = sk_turret_dmg.GetFloat();
+			info.m_flDamage = sk_floor_turret_dmg.GetFloat();
 #endif
 			info.m_iShots = 1;
 			info.m_pAttacker = this;
@@ -1189,7 +1215,7 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 			info.m_vecDirShooting = vecDirToEnemy;
 			info.m_iTracerFreq = 1;
 #ifdef MAPBASE
-			info.m_flDamage = sk_turret_dmg.GetFloat();
+			info.m_flDamage = sk_floor_turret_dmg.GetFloat();
 #endif
 			info.m_iShots = 1;
 			info.m_pAttacker = this;
@@ -1430,6 +1456,9 @@ void CNPC_FloorTurret::InactiveThink( void )
 //-----------------------------------------------------------------------------
 void CNPC_FloorTurret::ReturnToLife( void )
 {
+	if ( m_bBehaviorOnFall == 1 )
+		return;
+
 	m_flThrashTime = 0;
 
 	// Enable the tip controller
@@ -1935,6 +1964,45 @@ int CNPC_FloorTurret::VPhysicsTakeDamage( const CTakeDamageInfo &info )
 	return BaseClass::VPhysicsTakeDamage( info );
 }
 
+#ifdef MAPBASE
+void CNPC_FloorTurret::Explode()
+{
+	if ( !m_bImmovable )
+		CreateVPhysics();
+
+	m_flDestructStartTime = gpGlobals->curtime;
+	m_flPingTime = gpGlobals->curtime;
+	m_bSelfDestructing = true;
+
+	SetThink( &CNPC_FloorTurret::SelfDestructThink );
+	SetNextThink( gpGlobals->curtime + 0.1f );
+
+	// Create the dust effect in place
+	m_hFizzleEffect = ( CParticleSystem* ) CreateEntityByName( "info_particle_system" );
+	if ( m_hFizzleEffect != NULL )
+	{
+		Vector vecUp;
+		GetVectors( NULL, NULL, &vecUp );
+
+		// Setup our basic parameters
+		m_hFizzleEffect->KeyValue( "start_active", "1" );
+		m_hFizzleEffect->KeyValue( "effect_name", "explosion_turret_fizzle" );
+		m_hFizzleEffect->SetParent( this );
+		m_hFizzleEffect->SetAbsOrigin( WorldSpaceCenter() + ( vecUp * 12.0f ) );
+		DispatchSpawn( m_hFizzleEffect );
+		m_hFizzleEffect->Activate();
+	}
+}
+
+void CNPC_FloorTurret::Event_Killed( const CTakeDamageInfo& info )
+{
+	if ( (m_bKillable && m_iHealth < 0) || m_bBehaviorOnFall == 2 )
+		Explode();
+
+	BaseClass::Event_Killed( info );
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &info - 
@@ -2245,6 +2313,9 @@ void CNPC_FloorTurret::SelfDestructThink( void )
 //-----------------------------------------------------------------------------
 void CNPC_FloorTurret::InputSelfDestruct( inputdata_t &inputdata )
 {
+#ifdef MAPBASE
+	Explode();
+#else
 	// Ka-boom!
 	m_flDestructStartTime = gpGlobals->curtime;
 	m_flPingTime = gpGlobals->curtime;
@@ -2268,6 +2339,7 @@ void CNPC_FloorTurret::InputSelfDestruct( inputdata_t &inputdata )
 		DispatchSpawn( m_hFizzleEffect );
 		m_hFizzleEffect->Activate();
 	}
+#endif
 }
 
 // 

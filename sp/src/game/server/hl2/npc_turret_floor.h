@@ -71,6 +71,10 @@ public:
 	virtual void	PlayerPenetratingVPhysics( void );
 	virtual int		VPhysicsTakeDamage( const CTakeDamageInfo &info );
 	virtual bool	CanBecomeServerRagdoll( void ) { return false; }
+#ifdef MAPBASE
+	virtual void	Event_Killed( const CTakeDamageInfo& info );
+	void			Explode();
+#endif
 
 #ifdef HL2_EPISODIC
 	// We don't want to be NPCSOLID because we'll collide with NPC clips
@@ -245,6 +249,13 @@ protected:
 #endif
 #ifdef MAPBASE
 	int		m_iAmmoCount;
+	bool	m_bImmovable;
+	bool	m_bKillable;
+	
+	int		m_bBehaviorOnFall;
+	// 0 - normal
+	// 1 - deactivate and never come back
+	// 2 - explode
 #endif
 
 	CHandle<CBaseCombatCharacter> m_hLastNPCToKickMe;		// Stores the last NPC who tried to knock me over
