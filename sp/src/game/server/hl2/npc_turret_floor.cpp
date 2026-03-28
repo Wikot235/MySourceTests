@@ -166,6 +166,8 @@ BEGIN_DATADESC( CNPC_FloorTurret )
 	DEFINE_OUTPUT( m_OnPhysGunDrop, "OnPhysGunDrop" ),
 #ifdef MAPBASE
 	DEFINE_OUTPUT( m_OnStartTipped, "OnStartTipped" ),
+	DEFINE_OUTPUT( m_OnDepletedAmmo, "OnDepletedAmmo" ),
+	DEFINE_OUTPUT( m_OnExploded, "OnExploded" ),
 #endif
 
 	DEFINE_BASENPCINTERACTABLE_DATADESC(),
@@ -1233,7 +1235,10 @@ void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy,
 			m_iAmmoCount--;
 
 		if ( m_iAmmoCount == 0 && !HasSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO ) )
+		{
 			AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+			m_OnDepletedAmmo.FireOutput( this, this );
+		}
 #endif
 	}
 }
@@ -1852,6 +1857,7 @@ void CNPC_FloorTurret::InputDepleteAmmo( inputdata_t &inputdata )
 	AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
 #ifdef MAPBASE
 	m_iAmmoCount = 0;
+	m_OnDepletedAmmo.FireOutput( this, this );
 #endif
 }
 
@@ -1875,9 +1881,12 @@ void CNPC_FloorTurret::InputChangeAmmoCount( inputdata_t &inputdata )
 			RemoveSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
 	}
 	else if ( inputdata.value.Int() == 0 )
+	{
 		AddSpawnFlags( SF_FLOOR_TURRET_OUT_OF_AMMO );
+	}
 
 	m_iAmmoCount = inputdata.value.Int();
+	m_OnDepletedAmmo.FireOutput( this, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -2248,6 +2257,9 @@ void CNPC_FloorTurret::BreakThink( void )
 	}
 
 	// We're done!
+#ifdef MAPBASE
+	m_OnExploded.FireOutput( this, this );
+#endif
 	UTIL_Remove( this );
 }
 

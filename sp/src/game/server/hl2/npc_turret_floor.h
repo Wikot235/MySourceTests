@@ -286,6 +286,8 @@ protected:
 	COutputEvent m_OnPhysGunDrop;
 #ifdef MAPBASE
 	COutputEvent m_OnStartTipped;
+	COutputEvent m_OnDepletedAmmo;
+	COutputEvent m_OnExploded;
 #endif
 
 	bool	m_bHackedByAlyx;
