@@ -39,8 +39,8 @@ const char *GetMassEquivalent(float flMass);
 ConVar	g_debug_turret( "g_debug_turret", "0" );
 
 #ifdef MAPBASE
-ConVar sk_floor_turret_dmg( "sk_turret_dmg", "0" );
-ConVar sk_floor_turret_health( "sk_turret_health", "100" );
+ConVar sk_floor_turret_dmg( "sk_floor_turret_dmg", "3" );
+ConVar sk_floor_turret_health( "sk_floor_turret_health", "100" );
 #endif
 
 extern ConVar physcannon_tracelength;
