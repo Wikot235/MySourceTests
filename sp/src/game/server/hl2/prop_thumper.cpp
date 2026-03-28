@@ -19,9 +19,11 @@
 #define THUMPER_RADIUS 1000
 #endif
 
+#ifdef MAPBASE
 #define SF_NO_DUST		1
 #define SF_NO_SHAKE		2
 #define SF_DISABLED		4
+#endif
 
 #define STATE_CHANGE_MODIFIER 0.02f
 #define THUMPER_SOUND_DURATION 1.5f
@@ -62,8 +64,10 @@ private:
 	int m_iDustScale;
 	
 
+#ifdef MAPBASE
 	// I would have used color24 instead of color32, but there is no FIELD_COLOR32
 	color32 m_DustColor;
+#endif
 
 	COutputEvent	m_OnThumped;	// Fired when thumper goes off
 
@@ -92,7 +96,9 @@ BEGIN_DATADESC( CPropThumper )
 
 	DEFINE_OUTPUT( m_OnThumped, "OnThumped" ),
 
+#ifdef MAPBASE
 	DEFINE_KEYFIELD( m_DustColor, FIELD_COLOR32, "DustColor" ),
+#endif
 
 END_DATADESC()
 
@@ -105,6 +111,10 @@ void CPropThumper::Spawn( void )
 		SetModelName( AllocPooledString(szModel) );
 	}
 
+#ifdef MAPBASE
+	KeyValue( "DustColor", "216 191 132" );
+#endif
+
 	Precache();
 	SetModel( szModel );
 
@@ -114,10 +124,14 @@ void CPropThumper::Spawn( void )
 
 	BaseClass::Spawn();
 
+#ifdef MAPBASE
 	if (HasSpawnFlags(SF_DISABLED))
 		m_bEnabled = false;
 	else
 		m_bEnabled = true;
+#else
+	m_bEnabled = true;
+#endif
 
 	SetThink( &CPropThumper::Think );
 	SetNextThink( gpGlobals->curtime + 1.0f );
@@ -153,15 +167,6 @@ void CPropThumper::Spawn( void )
 	if ( m_iEffectRadius == 0 )
 		m_iEffectRadius = 1000;
 #endif
-
-	//This isn't very clever, but there needs to be a fallback for maps that dont have a color specified.
-	//Mappers can use 1 1 1 instead of 0 0 0, as it looks the same.
-	if ((m_DustColor.r == 0 && m_DustColor.g == 0 && m_DustColor.b == 0) && !HasSpawnFlags(SF_NO_DUST))
-	{
-		m_DustColor.r = 0.85 * 255;
-		m_DustColor.g = 0.75 * 255;
-		m_DustColor.b = 0.52 * 255;
-	}
 
 }
 
@@ -228,16 +233,26 @@ void CPropThumper::Thump ( void )
 		data.m_vOrigin = vOrigin;
 		data.m_flScale = m_iDustScale * m_flPlaybackRate;
 
+#ifdef MAPBASE
 		data.m_bCustomColors = true;
 		data.m_CustomColors.m_vecColor1.x = (float)m_DustColor.r / 255;
 		data.m_CustomColors.m_vecColor1.y = (float)m_DustColor.g / 255;
 		data.m_CustomColors.m_vecColor1.z = (float)m_DustColor.b / 255;
+#endif
 
-		if (!HasSpawnFlags(SF_NO_DUST))
-			DispatchEffect("ThumperDust", data);
+#ifdef MAPBASE
+		if ( !HasSpawnFlags( SF_NO_DUST ) )
+			DispatchEffect( "ThumperDust", data );
+#else
+		DispatchEffect("ThumperDust", data);
+#endif
 
-		if (!HasSpawnFlags(SF_NO_SHAKE))
-			UTIL_ScreenShake(vOrigin, 10.0 * m_flPlaybackRate, m_flPlaybackRate, m_flPlaybackRate / 2, THUMPER_RADIUS * m_flPlaybackRate, SHAKE_START, false);
+#ifdef MAPBASE
+		if ( !HasSpawnFlags( SF_NO_SHAKE ) )
+			UTIL_ScreenShake( vOrigin, 10.0 * m_flPlaybackRate, m_flPlaybackRate, m_flPlaybackRate / 2, THUMPER_RADIUS * m_flPlaybackRate, SHAKE_START, false );
+#else
+		UTIL_ScreenShake( vOrigin, 10.0 * m_flPlaybackRate, m_flPlaybackRate, m_flPlaybackRate / 2, THUMPER_RADIUS * m_flPlaybackRate, SHAKE_START, false );
+#endif
 
 	}
 
