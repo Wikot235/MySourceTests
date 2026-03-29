@@ -40,6 +40,10 @@ public:
 	DECLARE_CLASS( CPropThumper, CBaseAnimating );
 	DECLARE_DATADESC();
 
+#ifdef MAPBASE
+	CPropThumper( void );
+#endif
+
 	virtual void Spawn( void );
 	virtual void Precache( void );
 	virtual void Think ( void );
@@ -102,6 +106,19 @@ BEGIN_DATADESC( CPropThumper )
 
 END_DATADESC()
 
+#ifdef MAPBASE
+CPropThumper::CPropThumper() :
+	m_bEnabled( true ),
+	m_iHammerAttachment( -1 ),
+	m_sndMotor( NULL ),
+	m_hRepellantEnt( NULL ),
+	m_iDustScale( THUMPER_MIN_SCALE )
+{
+	KeyValue( "dustcolor", "217 191 133" );
+}
+#endif 
+
+
 void CPropThumper::Spawn( void )
 {
 	char *szModel = (char *)STRING( GetModelName() );
@@ -110,10 +127,6 @@ void CPropThumper::Spawn( void )
 		szModel = THUMPER_MODEL_NAME;
 		SetModelName( AllocPooledString(szModel) );
 	}
-
-#ifdef MAPBASE
-	KeyValue( "DustColor", "216 191 132" );
-#endif
 
 	Precache();
 	SetModel( szModel );
@@ -125,7 +138,7 @@ void CPropThumper::Spawn( void )
 	BaseClass::Spawn();
 
 #ifdef MAPBASE
-	if (HasSpawnFlags(SF_DISABLED))
+	if ( HasSpawnFlags( SF_DISABLED ) )
 		m_bEnabled = false;
 	else
 		m_bEnabled = true;
