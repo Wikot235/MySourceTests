@@ -1,3 +1,9 @@
+//========= Mapbase - https://github.com/mapbase-source/source-sdk-2013 ============//
+//
+// Purpose: Allows mappers to crash the game and display a message
+//
+//=============================================================================//
+
 #include "cbase.h"
 #ifdef _WIN32
 #include <windows.h>
